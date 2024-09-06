@@ -12,7 +12,7 @@ const AuthNavigator = () => (
             headerTintColor: "white",
             headerShown: false
         }} />
-        <Stack.Screen name="login" component={LoginScreen} />
+        <Stack.Screen name="login" component={LoginScreen}  />
         <Stack.Screen name="register" component={WelcomeScreen} />
     </Stack.Navigator>
 )

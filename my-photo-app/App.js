@@ -3,11 +3,15 @@ import { StyleSheet, Text, View } from 'react-native';
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './app/navigation/AuthNavigator';
+import myNavTheme from './app/navigation/navigationTheme';
+import AppNavigator from './app/navigation/AppNavigator';
 
 export default function App() {
   return (
-    <NavigationContainer >
-      <AuthNavigator />
+    <NavigationContainer theme={myNavTheme}>
+      {/* <AuthNavigator /> */}
+
+      <AppNavigator />
     </NavigationContainer>
   );
 }
