@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AppText from './app/components/AppText';
+import AppButton from './app/components/AppButton';
 
 function Tweets({ navigation }) {
   return (
@@ -101,7 +103,7 @@ export default function App() {
         elevation: 30,
 
       }}></View> */}
-
+      {/* 
       <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
@@ -124,7 +126,26 @@ export default function App() {
         width: 100,
         height: 100,
         margin: 20
-      }}></View>
+      }}></View> */}
+      {/* 
+      <Text style={{
+        // fontFamily: "Roboto",
+        fontSize: 30,
+        fontStyle: "italic",
+        fontWeight: "600",
+        color: "tomato",
+        textTransform: "capitalize",
+        textAlign: "center",
+        lineHeight: 30
+        // textDecorationLine
+      }}>
+        I Love React Native! This is my react native apps. Here some more text
+      </Text> */}
+      {/* <AppText>
+        I Love React Native! This is my react native apps. Here some more text
+      </AppText>
+      <MaterialCommunityIcons name='email' size={200} color="dodgerblue"> </MaterialCommunityIcons> */}
+      <AppButton title="Login" />
     </View>
   );
 }
