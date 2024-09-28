@@ -76,7 +76,8 @@ export default function App() {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <View style={{
+      {/* border  */}
+      {/* <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
         height: 100,
@@ -85,6 +86,44 @@ export default function App() {
         borderRadius: 10,
         borderTopWidth: 20,
         borderTopRightRadius: 50,
+      }}></View> */}
+      {/* shadow  */}
+      {/* <View style={{
+        backgroundColor: "dodgerblue",
+        width: 100,
+        height: 100,
+        // for ios 
+        shadowColor: "black",
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        // andriod
+        elevation: 30,
+
+      }}></View> */}
+
+      <View style={{
+        backgroundColor: "dodgerblue",
+        width: 100,
+        height: 100,
+        padding: 20,
+        paddingHorizontal: 10,
+        paddingLeft: 30
+        // paddingVertical:30
+      }}>
+        <View style={{
+          backgroundColor: "gold",
+          width: 50,
+          height: 50,
+
+        }}></View>
+
+      </View>
+      <View style={{
+        backgroundColor: "tomato",
+        width: 100,
+        height: 100,
+        margin: 20
       }}></View>
     </View>
   );
