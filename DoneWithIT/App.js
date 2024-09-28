@@ -70,38 +70,23 @@ const FeedNavigator = () => (
 
 export default function App() {
   return (
-    <NavigationContainer>
-      {/* stack navigation */}
-      {/* <Stack.Navigator screenOptions={{
-        headerStyle: { backgroundColor: "dodgerblue" },
-        headerTintColor: "white",
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
       }}>
-        <Stack.Screen name='Tweets' component={Tweets}
-          options={{
-            headerStyle: { backgroundColor: "tomato" },
-            headerTintColor: "white",
-            // headerShown: false
-          }}
-        />
-        <Stack.Screen name='TweetsDetails' options={({ route }) => ({ title: route.params.id })} component={TweetsDetails} />
-      </Stack.Navigator> */}
-
-
-      {/* Tab navigation */}
-
-      <Tab.Navigator tabBarOptions={{
-        activeBackgroundColor: 'tomato',
-        activeTintColor: "white",
-        inactiveBackgroundColor: "#eee",
-        inactiveTintColor: "black"
-
-      }}>
-        <Tab.Screen name='Tweets' component={FeedNavigator} options={{
-          tabBarIcon: ({ size, color }) => <MaterialCommunityIcons name='home' size={size} color={color} />
-        }} />
-        <Tab.Screen name='Account' component={Account} />
-      </Tab.Navigator>
-    </NavigationContainer >
+      <View style={{
+        backgroundColor: "dodgerblue",
+        width: 100,
+        height: 100,
+        borderWidth: 10,
+        borderColor: "royalblue",
+        borderRadius: 10,
+        borderTopWidth: 20,
+        borderTopRightRadius: 50,
+      }}></View>
+    </View>
   );
 }
 
@@ -113,3 +98,37 @@ export default function App() {
 //     // justifyContent: 'center',
 //   },
 // });
+
+
+// <NavigationContainer>
+//   {/* stack navigation */}
+//   {/* <Stack.Navigator screenOptions={{
+//         headerStyle: { backgroundColor: "dodgerblue" },
+//         headerTintColor: "white",
+//       }}>
+//         <Stack.Screen name='Tweets' component={Tweets}
+//           options={{
+//             headerStyle: { backgroundColor: "tomato" },
+//             headerTintColor: "white",
+//             // headerShown: false
+//           }}
+//         />
+//         <Stack.Screen name='TweetsDetails' options={({ route }) => ({ title: route.params.id })} component={TweetsDetails} />
+//       </Stack.Navigator> */}
+
+
+//   {/* Tab navigation */}
+
+//   <Tab.Navigator tabBarOptions={{
+//     activeBackgroundColor: 'tomato',
+//     activeTintColor: "white",
+//     inactiveBackgroundColor: "#eee",
+//     inactiveTintColor: "black"
+
+//   }}>
+//     <Tab.Screen name='Tweets' component={FeedNavigator} options={{
+//       tabBarIcon: ({ size, color }) => <MaterialCommunityIcons name='home' size={size} color={color} />
+//     }} />
+//     <Tab.Screen name='Account' component={Account} />
+//   </Tab.Navigator>
+// </NavigationContainer >

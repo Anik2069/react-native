@@ -41,7 +41,7 @@ const Account = ({ navigation }) => {
                 <ListItem
                     title="Mosh Hamedani"
                     description="programmingwithmosh@gmail.com"
-                    image={require("../assets/mosh.jpg")}
+                    image={require("../assets/anik.jpg")}
                 />
             </View>
             <View>
