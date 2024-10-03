@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
         // fontFamily: Platform.OS === "andriod" ? "Roboto" : "Avenir",
         // fontStyle: "italic",
         // fontWeight: "600",
-        color: "tomato",
+        color: "black",
         // textTransform: "capitalize",
         // textAlign: "center",
         // lineHeight: 30
