@@ -6,8 +6,12 @@ import color from '../config/color';
 function ViewImageScreen(props) {
     return (
         <View style={styles.container}>
-            <View style={styles.closeIcon}></View>
-            <View style={styles.deleteIcon}></View>
+            <View style={styles.closeIcon}>
+                <MaterialCommunityIcons name="close" color="white" size={30} />
+            </View>
+            <View style={styles.deleteIcon}>
+                <MaterialCommunityIcons name="trash-can-outline" color="white" size={30} />
+            </View>
             <Image resizeMode='contain' style={styles.image} source={require("../../assets/chair.jpg")}></Image>
         </View>
 
@@ -20,18 +24,18 @@ const styles = StyleSheet.create({
         flex: 1
     },
     closeIcon: {
-        width: 50,
-        height: 50,
-        backgroundColor: color.primary,
+        // width: 50,
+        // height: 50,
+        // backgroundColor: color.primary,
         position: "absolute",
         top: 40,
         left: 30
     },
 
     deleteIcon: {
-        width: 50,
-        height: 50,
-        backgroundColor: color.secondary,
+        // width: 50,
+        // height: 50,
+        // backgroundColor: color.secondary,
         position: "absolute",
         top: 40,
         right: 30

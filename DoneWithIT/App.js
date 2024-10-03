@@ -163,8 +163,16 @@ export default function App() {
           image={require("./app/assets/jacket.jpg")}
         />
 
+
+        <Card
+          title="Chair"
+          subtitle="$100"
+          image={require("./assets/chair.jpg")}
+        />
+
       </View> */}
-      <ListingDetailsScreen />
+      {/* <ListingDetailsScreen /> */}
+      <ViewImageScreen />
       {/* <WelcomeScreen /> */}
     </>
   );
