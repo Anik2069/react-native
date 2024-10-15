@@ -3,10 +3,10 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-function Screen({ children }) {
+function Screen({ children, style }) {
     return (
         <GestureHandlerRootView>
-            <SafeAreaView style={styles.screen}>
+            <SafeAreaView style={[styles.screen, style]}>
                 {children}
             </SafeAreaView>
         </GestureHandlerRootView>
