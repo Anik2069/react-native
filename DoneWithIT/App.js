@@ -15,6 +15,8 @@ import Screen from './app/components/Screen';
 import Icon from './app/components/Icon';
 import ListItem from './app/components/ListItem';
 import AccountScreen from './app/screens/AccountScreen';
+import ListingsScreen from './app/screens/ListingsScreen';
+import AppTextInput from './app/components/InputComponent/AppTextInput';
 
 function Tweets({ navigation }) {
   return (
@@ -179,7 +181,9 @@ export default function App() {
       {/* <ListingDetailsScreen /> */}
       {/* <ViewImageScreen /> */}
       {/* <MessagesScreen /> */}
-      <AccountScreen />
+      <Screen>
+        <AppTextInput />
+      </Screen>
       {/* <WelcomeScreen /> */}
     </>
   );
