@@ -12,19 +12,21 @@ const menuItems = [
         icon: {
             name: "format-list-bulleted",
             backgroundColor: color.primary
-        }
+        },
+        url: "Lisiting"
     },
     {
         title: "My Message",
         icon: {
             name: "email",
             backgroundColor: color.secondary
-        }
+        },
+        url: "Messages"
     }
 ]
 
 
-function AccountScreen(props) {
+function AccountScreen({ navigation }) {
     return (
         <Screen style={styles.screen}>
             <View style={styles.container}>
@@ -40,8 +42,12 @@ function AccountScreen(props) {
                     keyExtractor={menuItem => menuItem.title}
                     ItemSeparatorComponent={ListItemSeparator}
                     renderItem={({ item }) =>
-                        <ListItem title={item.title}
-                            IconComponent={<Icon name={item.icon.name} backgroundColor={item.icon.backgroundColor} />}
+                        <ListItem
+                            title={item.title}
+                            onPress={() => navigation.navigate("Messages")}
+                            IconComponent={<Icon name={item.icon.name} backgroundColor={item.icon.backgroundColor}
+
+                            />}
                         />
                     }
                 />

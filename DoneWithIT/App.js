@@ -15,6 +15,14 @@ import Screen from './app/components/Screen';
 import Icon from './app/components/Icon';
 import ListItem from './app/components/ListItem';
 import AccountScreen from './app/screens/AccountScreen';
+import AppTextInput from './app/components/AppTextInput';
+import AppSwitch from './app/components/AppSwitch';
+import AppPicker from './app/components/AppPicker';
+import { useState } from 'react';
+import LoginScreen from './app/screens/LoginScreen';
+import AppNavigator from './app/navigation/AppNavigator';
+import AuthNavigator from './app/navigation/AuthNavigator';
+import myNavTheme from './app/navigation/navigationTheme';
 
 function Tweets({ navigation }) {
   return (
@@ -76,19 +84,46 @@ const FeedNavigator = () => (
     <Stack.Screen name='TweetsDetails' options={({ route }) => ({ title: route.params.id })} component={TweetsDetails} />
   </Stack.Navigator>
 )
-
+const categories = [
+  {
+    label: "GFu", value: 1
+  },
+  {
+    label: "Gu", value: 2
+  },
+  {
+    label: "Fu", value: 3
+  }
+]
 export default function App() {
+  const [category, setCategory] = useState(categories[0]);
   return (
     <>
-      {/* <View
+      {/* theme={myNavTheme} */}
+      <NavigationContainer >
+        <AuthNavigator />
+        {/* <AppNavigator /> */}
+      </NavigationContainer>
+    </>
+  );
+}
+{/* <Screen>
+  <AppPicker selectedItem={category}
+    onSelectItem={(item) => setCategory(item)}
+    placeholder={"Category"} items={categories} icon={"apps"} />
+  <AppTextInput icon={"email"} placeholder={'Email'} />
+  <AppSwitch />
+</Screen> */}
+
+{/* <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
       > */}
-      {/* border  */}
-      {/* <View style={{
+{/* border  */ }
+{/* <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
         height: 100,
@@ -98,8 +133,8 @@ export default function App() {
         borderTopWidth: 20,
         borderTopRightRadius: 50,
       }}></View> */}
-      {/* shadow  */}
-      {/* <View style={{
+{/* shadow  */ }
+{/* <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
         height: 100,
@@ -112,7 +147,7 @@ export default function App() {
         elevation: 30,
 
       }}></View> */}
-      {/* 
+{/* 
       <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
@@ -136,7 +171,7 @@ export default function App() {
         height: 100,
         margin: 20
       }}></View> */}
-      {/* 
+{/* 
       <Text style={{
         // fontFamily: "Roboto",
         fontSize: 30,
@@ -150,14 +185,14 @@ export default function App() {
       }}>
         I Love React Native! This is my react native apps. Here some more text
       </Text> */}
-      {/* <AppText>
+{/* <AppText>
         I Love React Native! This is my react native apps. Here some more text
       </AppText>
       <MaterialCommunityIcons name='email' size={200} color="dodgerblue"> </MaterialCommunityIcons> */}
-      {/* <AppButton title="Login" onPress={() => console.log("Tappped")} /> */}
+{/* <AppButton title="Login" onPress={() => console.log("Tappped")} /> */ }
 
-      {/* </View> */}
-      {/* <View style={{
+{/* </View> */ }
+{/* <View style={{
         backgroundColor: "#f8f4f4",
         padding: 20,
         paddingTop: 100
@@ -176,14 +211,11 @@ export default function App() {
         />
 
       </View> */}
-      {/* <ListingDetailsScreen /> */}
-      {/* <ViewImageScreen /> */}
-      {/* <MessagesScreen /> */}
-      <AccountScreen />
-      {/* <WelcomeScreen /> */}
-    </>
-  );
-}
+{/* <ListingDetailsScreen /> */ }
+{/* <ViewImageScreen /> */ }
+{/* <MessagesScreen /> */ }
+{/* <AccountScreen /> */ }
+
 
 // const styles = StyleSheet.create({
 //   container: {
