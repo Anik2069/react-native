@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import ViewImageScreen from './app/screens/ViewImageScreen';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,12 +18,14 @@ import AccountScreen from './app/screens/AccountScreen';
 import AppTextInput from './app/components/AppTextInput';
 import AppSwitch from './app/components/AppSwitch';
 import AppPicker from './app/components/AppPicker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoginScreen from './app/screens/LoginScreen';
 import AppNavigator from './app/navigation/AppNavigator';
 import AuthNavigator from './app/navigation/AuthNavigator';
 import myNavTheme from './app/navigation/navigationTheme';
-
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import EditScreen from './app/screens/EditScreen';
 function Tweets({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -97,13 +99,17 @@ const categories = [
 ]
 export default function App() {
   const [category, setCategory] = useState(categories[0]);
+
+
   return (
     <>
       {/* theme={myNavTheme} */}
       <NavigationContainer >
-        <AuthNavigator />
-        {/* <AppNavigator /> */}
+        {/* <AuthNavigator /> */}
+        <AppNavigator />
       </NavigationContainer>
+
+
     </>
   );
 }

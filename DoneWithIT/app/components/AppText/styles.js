@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         ...Platform.select({
             ios: {
                 fontSize: 20,
-                fontFamily: "Avenir"
+                // fontFamily: "Avenir"
             },
             android: {
                 fontSize: 18,

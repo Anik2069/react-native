@@ -6,6 +6,7 @@ import FeedNavigator from './FeedNavigator';
 import AccountNavigator from './AccountNavigator';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import NewListingButton from './NewListingButton';
+import EditScreen from '../screens/EditScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,8 +18,8 @@ const AppNavigator = () => (
                 <MaterialCommunityIcons name='home' color={color} size={20} />
 
         }} />
-        <Tab.Screen name='Messages' component={MessagesScreen} options={({ navigation }) => ({
-            tabBarButton: () => <NewListingButton onPress={() => navigation.navigate("Messages")} />,
+        <Tab.Screen name='EditInput' component={EditScreen} options={({ navigation }) => ({
+            tabBarButton: () => <NewListingButton onPress={() => navigation.navigate("EditInput")} />,
             tabBarIcon: ({ color, size }) =>
                 <MaterialCommunityIcons name='plus-circle' color={color} size={size} />
 
