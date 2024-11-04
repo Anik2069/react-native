@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, FlatList } from "react-native"
+import { StyleSheet, FlatList, Button, ActivityIndicator } from "react-native"
 
 import Card from "../components/Card"
 import color from "../config/color"
 import Screen from "../components/Screen"
 import routes from "../navigation/route";
 import listingsApi from "../api/listing"
+import AppText from "../components/AppText"
+import AppButton from "../components/AppButton"
+import AppActivityIndicator from "../components/AppActivityIndicator"
 // const listData = [
 //     {
 //         id: "1",
@@ -23,20 +26,35 @@ import listingsApi from "../api/listing"
 
 const ListingScreen = ({ navigation }) => {
     const [listings, setListings] = useState([]);
-
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        loadListings()
+        loadListings();
+
     }, [])
 
     const loadListings = async () => {
+        setLoading(true);
         const respone = await listingsApi.getListings();
+
+        if (!respone.ok) return setError(true)
+
+        setLoading(false);
+        setError(false);
         setListings(respone.data)
     }
 
 
     return (
         <Screen style={styles.container}>
-            <FlatList
+            {error &&
+                <>
+                    <AppText>Could not retrive the lists</AppText>
+                    <AppButton title="Retry" onPress={loadListings} />
+                </>}
+            <AppActivityIndicator visible={true} />
+            {/* <ActivityIndicator animating={loading} size={50} /> */}
+            {/* <FlatList
                 data={listings}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
@@ -47,7 +65,7 @@ const ListingScreen = ({ navigation }) => {
                         onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
                     />
                 )}
-            />
+            /> */}
         </Screen>
     )
 }
