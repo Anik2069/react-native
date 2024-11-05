@@ -9,6 +9,7 @@ import listingsApi from "../api/listing"
 import AppText from "../components/AppText"
 import AppButton from "../components/AppButton"
 import AppActivityIndicator from "../components/AppActivityIndicator"
+import useApi from "../hooks/useApi"
 // const listData = [
 //     {
 //         id: "1",
@@ -25,24 +26,17 @@ import AppActivityIndicator from "../components/AppActivityIndicator"
 // ]
 
 const ListingScreen = ({ navigation }) => {
-    const [listings, setListings] = useState([]);
-    const [error, setError] = useState(false);
-    const [loading, setLoading] = useState(true);
+
+    const { data: listings, error, loading, request: loadListings } = useApi(listingsApi.getListings())
+    // const getListingApi = useApi(listingsApi.getListings())
+
     useEffect(() => {
         loadListings();
-
+        //Argument
+        loadListings(1, 2, 3);
     }, [])
 
-    const loadListings = async () => {
-        setLoading(true);
-        const respone = await listingsApi.getListings();
 
-        if (!respone.ok) return setError(true)
-
-        setLoading(false);
-        setError(false);
-        setListings(respone.data)
-    }
 
 
     return (
@@ -52,9 +46,10 @@ const ListingScreen = ({ navigation }) => {
                     <AppText>Could not retrive the lists</AppText>
                     <AppButton title="Retry" onPress={loadListings} />
                 </>}
+
             <AppActivityIndicator visible={true} />
-            {/* <ActivityIndicator animating={loading} size={50} /> */}
-            {/* <FlatList
+
+            <FlatList
                 data={listings}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
@@ -65,7 +60,7 @@ const ListingScreen = ({ navigation }) => {
                         onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
                     />
                 )}
-            /> */}
+            />
         </Screen>
     )
 }
@@ -75,5 +70,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         backgroundColor: color.light,
     },
+
 })
 export default ListingScreen

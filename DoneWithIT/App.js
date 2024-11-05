@@ -26,6 +26,9 @@ import myNavTheme from './app/navigation/navigationTheme';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import EditScreen from './app/screens/EditScreen';
+import AuthContext from './app/auth/context';
+import storage from './app/auth/storage';
+import { jwtDecode } from 'jwt-decode';
 function Tweets({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -99,18 +102,31 @@ const categories = [
 ]
 export default function App() {
   const [category, setCategory] = useState(categories[0]);
+  const [user, setUser] = useState(null);
+
+  const restoreToken = async () => {
+    const token = await storage.getToken();
+    if (!token) return;
+
+    setUser(jwtDecode(token));
+  }
+
+  useEffect(() => {
+    restoreToken()
+  }, [])
+
 
 
   return (
-    <>
+    <AuthContext.Provider value={{ user, setUser }}>
       {/* theme={myNavTheme} */}
       <NavigationContainer >
-        {/* <AuthNavigator /> */}
-        <AppNavigator />
+        {user ? <AppNavigator /> : <AuthNavigator />}
+        {/*  */}
       </NavigationContainer>
 
 
-    </>
+    </AuthContext.Provider>
   );
 }
 {/* <Screen>

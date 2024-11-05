@@ -12,6 +12,8 @@ import PickerItem from '../components/PickerItem';
 import AppPicker from '../components/AppPicker';
 import SubmitButton from '../components/SubmitButton';
 import * as Location from "expo-location";
+import listingApi from "../api/listing";
+import listing from '../api/listing';
 
 const validatorSchema = Yup.object().shape({
     title: Yup.string().required().email().label("Title"),
@@ -52,8 +54,19 @@ function EditScreen({ selectImage }) {
         console.log(result2, "dd");
     }
     useEffect(() => {
-        getLocation()
+        // getLocation()
     }, [])
+
+    const handleSubmit = async (listing) => {
+        console.log("listing", listing);
+        const result = await listingApi.addListing(listing)
+
+        if(!result.ok){
+            return alert("Could not ssave the list")
+        }
+
+        alert("done");
+    }
     return (
         <Screen>
             <AppForm
@@ -64,6 +77,10 @@ function EditScreen({ selectImage }) {
                     category: null,
                     images: []
                 }}
+
+                onSubmit={handleSubmit}
+
+
             >
                 <FormImagePicker name={"images"} />
                 <AppFormField placeholder="Title" name={"title"} />
