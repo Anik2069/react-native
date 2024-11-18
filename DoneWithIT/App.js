@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import ViewImageScreen from './app/screens/ViewImageScreen';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,9 +15,20 @@ import Screen from './app/components/Screen';
 import Icon from './app/components/Icon';
 import ListItem from './app/components/ListItem';
 import AccountScreen from './app/screens/AccountScreen';
-import ListingsScreen from './app/screens/ListingsScreen';
-import AppTextInput from './app/components/InputComponent/AppTextInput';
-
+import AppTextInput from './app/components/AppTextInput';
+import AppSwitch from './app/components/AppSwitch';
+import AppPicker from './app/components/AppPicker';
+import { useEffect, useState } from 'react';
+import LoginScreen from './app/screens/LoginScreen';
+import AppNavigator from './app/navigation/AppNavigator';
+import AuthNavigator from './app/navigation/AuthNavigator';
+import myNavTheme from './app/navigation/navigationTheme';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import EditScreen from './app/screens/EditScreen';
+import AuthContext from './app/auth/context';
+import storage from './app/auth/storage';
+import { jwtDecode } from 'jwt-decode';
 function Tweets({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -78,19 +89,63 @@ const FeedNavigator = () => (
     <Stack.Screen name='TweetsDetails' options={({ route }) => ({ title: route.params.id })} component={TweetsDetails} />
   </Stack.Navigator>
 )
-
+const categories = [
+  {
+    label: "GFu", value: 1
+  },
+  {
+    label: "Gu", value: 2
+  },
+  {
+    label: "Fu", value: 3
+  }
+]
 export default function App() {
+  const [category, setCategory] = useState(categories[0]);
+  const [user, setUser] = useState(null);
+
+  const restoreToken = async () => {
+    const token = await storage.getToken();
+    if (!token) return;
+
+    setUser(jwtDecode(token));
+  }
+
+  useEffect(() => {
+    restoreToken()
+  }, [])
+
+
+
   return (
-    <>
-      {/* <View
+    <AuthContext.Provider value={{ user, setUser }}>
+      {/* theme={myNavTheme} */}
+      <NavigationContainer >
+        {user ? <AppNavigator /> : <AuthNavigator />}
+        {/*  */}
+      </NavigationContainer>
+
+
+    </AuthContext.Provider>
+  );
+}
+{/* <Screen>
+  <AppPicker selectedItem={category}
+    onSelectItem={(item) => setCategory(item)}
+    placeholder={"Category"} items={categories} icon={"apps"} />
+  <AppTextInput icon={"email"} placeholder={'Email'} />
+  <AppSwitch />
+</Screen> */}
+
+{/* <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
       > */}
-      {/* border  */}
-      {/* <View style={{
+{/* border  */ }
+{/* <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
         height: 100,
@@ -100,8 +155,8 @@ export default function App() {
         borderTopWidth: 20,
         borderTopRightRadius: 50,
       }}></View> */}
-      {/* shadow  */}
-      {/* <View style={{
+{/* shadow  */ }
+{/* <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
         height: 100,
@@ -114,7 +169,7 @@ export default function App() {
         elevation: 30,
 
       }}></View> */}
-      {/* 
+{/* 
       <View style={{
         backgroundColor: "dodgerblue",
         width: 100,
@@ -138,7 +193,7 @@ export default function App() {
         height: 100,
         margin: 20
       }}></View> */}
-      {/* 
+{/* 
       <Text style={{
         // fontFamily: "Roboto",
         fontSize: 30,
@@ -152,14 +207,14 @@ export default function App() {
       }}>
         I Love React Native! This is my react native apps. Here some more text
       </Text> */}
-      {/* <AppText>
+{/* <AppText>
         I Love React Native! This is my react native apps. Here some more text
       </AppText>
       <MaterialCommunityIcons name='email' size={200} color="dodgerblue"> </MaterialCommunityIcons> */}
-      {/* <AppButton title="Login" onPress={() => console.log("Tappped")} /> */}
+{/* <AppButton title="Login" onPress={() => console.log("Tappped")} /> */ }
 
-      {/* </View> */}
-      {/* <View style={{
+{/* </View> */ }
+{/* <View style={{
         backgroundColor: "#f8f4f4",
         padding: 20,
         paddingTop: 100
@@ -178,16 +233,11 @@ export default function App() {
         />
 
       </View> */}
-      {/* <ListingDetailsScreen /> */}
-      {/* <ViewImageScreen /> */}
-      {/* <MessagesScreen /> */}
-      <Screen>
-        <AppTextInput />
-      </Screen>
-      {/* <WelcomeScreen /> */}
-    </>
-  );
-}
+{/* <ListingDetailsScreen /> */ }
+{/* <ViewImageScreen /> */ }
+{/* <MessagesScreen /> */ }
+{/* <AccountScreen /> */ }
+
 
 // const styles = StyleSheet.create({
 //   container: {
