@@ -1,4 +1,4 @@
-import { Image, ScrollView, Text, View } from "react-native";
+import { Alert, Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { icons, images } from "../constants";
 import InputField from "@/components/InputField";
@@ -12,6 +12,7 @@ import ReactNativeModal from 'react-native-modal';
 
 const Welcome = () => {
     const { isLoaded, signUp, setActive } = useSignUp()
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const [form, setForm] = useState({
         name: "",
@@ -20,7 +21,7 @@ const Welcome = () => {
     })
 
     const [verification, setVerification] = useState({
-        state: "pending",
+        state: "default",
         error: "",
         code: "",
     })
@@ -50,6 +51,7 @@ const Welcome = () => {
             // See https://clerk.com/docs/custom-flows/error-handling
             // for more info on error handling
             console.error(JSON.stringify(err, null, 2))
+            Alert.alert("Error", err.errors[0].longMessage);
         }
     }
 
@@ -134,23 +136,39 @@ const Welcome = () => {
             </View>
             //verification  modal
 
-            <ReactNativeModal isVisible={verification.state === 'pending'}>
+            <ReactNativeModal isVisible={verification.state === 'pending'} onModalHide={() => {
+                if (verification.state == "success") setShowSuccessModal(true)
+            }
+            }>
                 <View className="bg-white rounded-2xl px-7 py-9 min-h-[300px]" >
 
                     <Text className="text-3xl font-bold text-center">Verification</Text>
                     <Text className="mt-2 font-bold text-center text-gray-400">We've sent verification code to {form.email}</Text>
-                    <InputField label="Code" icon={icons.lock} value={verification.code} placeholder="12345" keyboardType="numeric"/>
+                    <InputField label="Code" icon={icons.lock} value={verification.code} placeholder="12345" keyboardType="numeric"
+                        onChangeText={(code) => {
+                            setVerification({ ...verification, code })
+                        }} />
+
+                    {verification.error && (
+                        <Text className="text-red-500 text-sm mt-1">
+                            {verification.error}
+                        </Text>
+                    )}
+                    <CustomButton title="Verify Email" className="mt-5 bg-success-500" onPress={onVerifyPress} />
                 </View>
             </ReactNativeModal>
 
-            <ReactNativeModal isVisible={verification.state === 'success'}>
+            <ReactNativeModal isVisible={showSuccessModal}>
                 <View className="bg-white rounded-2xl px-7 py-9 min-h-[300px]" >
                     <View className="flex items-center justify-center">
                         <Image source={images.check} className="mx-auto my-5 w-[110px] h-[110px]" />
                     </View>
                     <Text className="text-3xl font-bold text-center">Verified</Text>
                     <Text className="mt-2 font-bold text-center text-gray-400">You have successfully verified your account</Text>
-                    <CustomButton title="Browse Home" onPress={() => router.replace("/(root)/(tabs)/home")} className="mt-5" />
+                    <CustomButton title="Browse Home" onPress={() => {
+                        router.push("/(root)/(tabs)/home");
+                        setShowSuccessModal(false)
+                    }} className="mt-5" />
                 </View>
             </ReactNativeModal>
         </ScrollView>

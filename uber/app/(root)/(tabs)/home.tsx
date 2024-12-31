@@ -10,7 +10,7 @@ const Home = () => {
     return (
         <View>
             <SignedIn>
-                <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
+                <Text>Hello {user?.emailAddresses[0].emailAddress} jh</Text>
             </SignedIn>
             <SignedOut>
                 <Link href="/(auth)/sign-in">
