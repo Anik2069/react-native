@@ -8,6 +8,7 @@ import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
 import { useSignUp } from "@clerk/clerk-expo";
 import ReactNativeModal from 'react-native-modal';
+import { fetchAPI } from "@/lib/fetch";
 
 
 const Welcome = () => {
@@ -69,7 +70,14 @@ const Welcome = () => {
             // and redirect the user
             if (signUpAttempt.status === 'complete') {
                 //TODO: Create a database user! 
-
+                await fetchAPI("/api/user", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        name: form.name,
+                        email: form.email,
+                        clerkId: signUpAttempt.createdUserId  // Clerk user ID
+                    })
+                })
 
                 await setActive({ session: signUpAttempt.createdSessionId })
                 setVerification({ ...verification, state: 'success' });
@@ -150,7 +158,7 @@ const Welcome = () => {
                         }} />
 
                     {verification.error && (
-                        <Text className="text-red-500 text-sm mt-1">
+                        <Text className="mt-1 text-sm text-red-500">
                             {verification.error}
                         </Text>
                     )}
