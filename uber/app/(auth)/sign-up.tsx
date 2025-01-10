@@ -70,7 +70,7 @@ const Welcome = () => {
             // and redirect the user
             if (signUpAttempt.status === 'complete') {
                 //TODO: Create a database user! 
-                await fetchAPI("/api/user", {
+                await fetchAPI("/(api)/user", {
                     method: "POST",
                     body: JSON.stringify({
                         name: form.name,
