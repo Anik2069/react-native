@@ -1,14 +1,22 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-function MeterSensor({ bgColor = "bg-red-400" }) {
+function MeterSensor({ meterData }) {
     return (
-        <View className={`flex flex-row ${bgColor} justify-between mt-2`}>
-            <View className='p-5 '>
-                <Text className='text-white font-bold'>Low Sensor</Text>
+        <View
+            className={`flex flex-row items-center justify-between mb-2 rounded-lg shadow-md p-4`}
+            style={{ backgroundColor: meterData.Bgcolor }}
+        >
+            {/* Left Section - Key */}
+            <View className="flex-1">
+                <Text className="text-white text-lg font-bold">{meterData.Key}</Text>
             </View>
-            <View className='p-5 '>
-                <Text className='text-white font-bold'>Low</Text>
+
+            {/* Right Section - Value */}
+            <View className="flex-1 items-end">
+                <Text className="text-white text-lg font-bold">
+                    {meterData.Value === 0 ? 'Full' : 'Low'}
+                </Text>
             </View>
         </View>
     )
