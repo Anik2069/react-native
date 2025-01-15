@@ -9,3 +9,6 @@ npm install react-native-reanimated react-native-gesture-handler react-native-sc
 npm install @react-navigation/stack@^5.x
 npm install @react-navigation/bottom-tabs@^5.x
 
+#Build a Apps
+npx expo run:android
+

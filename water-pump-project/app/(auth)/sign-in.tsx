@@ -14,6 +14,7 @@ function signIn() {
   const router = useRouter();
 
   const handleLogin = async () => {
+    // console.log("object")
     setErrorData("");
     if (formData.email == "" && formData.password == "") {
       setErrorData("Please provide email and password");
@@ -29,12 +30,14 @@ function signIn() {
     const tempFormData = new FormData();
     tempFormData.append("user_input", formData.email);
     tempFormData.append("password", formData.password);
+
     axiosInstance.post("/login_api.php", tempFormData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
         }
       }).then((res) => {
+        console.log("object", tempFormData)
         if (res.data.status == "success") {
           alert("successfully login");
           console.log(res.data.token, "res.data.token");
@@ -44,11 +47,13 @@ function signIn() {
           alert("Invalid login")
         }
 
+      }).catch((error) => {
+        alert("Server offline") ;
       });
   };
 
   return (
-    <View className='bg-white h-full p-2'>
+    <View className='h-full p-2 bg-white'>
       <View className='flex flex-col p-5 pt-10 h-[40%] text-center justify-center items-center '>
         <View>
           <Image source={require('@/assets/images/logo.jpg')} />
@@ -61,7 +66,7 @@ function signIn() {
 
       </View>
       <View className=''>
-        <Text className='text-red-400 text-center'>{errorData}</Text>
+        <Text className='text-center text-red-400'>{errorData}</Text>
         <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : "height"}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
