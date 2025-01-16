@@ -12,3 +12,4 @@ npm install @react-navigation/bottom-tabs@^5.x
 #Build a Apps
 npx expo run:android
 
+eas build -p android --profile preview
