@@ -1,9 +1,10 @@
 import MeterSensor from '@/components/MeterSensor'
 import React, { useEffect, useState } from 'react'
-import { Image, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Image, RefreshControl, SafeAreaView, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from 'expo-router';
 import axiosInstance from '@/lib/axios';
+import Badge from '@/components/Badge';
 
 function dashboard() {
     const router = useRouter();
@@ -47,6 +48,33 @@ function dashboard() {
         } catch (error) {
             console.error("Error retrieving token:", error);
         }
+    };
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = async () => {
+        try {
+            const token = await SecureStore.getItemAsync("token");
+
+            if (token) {
+                const tempFormData = new FormData();
+                tempFormData.append("token", token);
+                axiosInstance.post("/pump_on_api.php", tempFormData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                }).then((response) => {
+                   
+                    if(response.data.status!="error"){
+
+                    }else{
+                        alert("Something went wrong")
+                    }
+                    
+                })
+            }
+        } catch (error) {
+            console.error("Error retrieving token:", error);
+        }
+        setIsEnabled(previousState => !previousState)
     };
     // console.log(responseData,"responseDataresponseData");
     return (
@@ -120,6 +148,22 @@ function dashboard() {
                         </View>
                     </View>
                 </View>
+                <View className="p-2 m-2 bg-white flex flex-row  justify-between rounded-md">
+                    <View className="flex-row items-center">
+                        <Text>Meter Status: </Text>
+                        <Badge status={responseData?.MotorStatus?.Value} />
+                    </View>
+                    <View className="ml-4">
+                        <Switch
+                            trackColor={{ false: '#767577', true: '#33ff8f' }}
+                            thumbColor={isEnabled ? '#79ff33' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={isEnabled}
+                        />
+                    </View>
+                </View>
+
 
                 <View className='p-2 m-2 rounded-lg bg-white'>
                     <Text className="text-lg font-semibold text-gray-800 mb-4 text-center">
