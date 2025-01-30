@@ -9,7 +9,7 @@ function MeterSensor({ meterData }) {
         >
             {/* Left Section - Key */}
             <View className="flex-1">
-                <Text className="text-white text-lg font-bold">{meterData.Key}</Text>
+                <Text className=" text-lg font-bold"  style={{ color: meterData.Textcolor }}>{meterData.Key}</Text>
             </View>
 
             {/* Right Section - Value */}
