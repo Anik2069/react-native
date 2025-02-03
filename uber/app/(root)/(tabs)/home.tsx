@@ -1,9 +1,9 @@
-import { ActivityIndicator, FlatList, Image, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { Link } from "expo-router";
 import RideCard from "@/components/RideCard";
-import { images } from "@/app/constants";
+import { icons, images } from "@/app/constants";
 
 const recentRids = [
     {
@@ -107,6 +107,10 @@ const recentRids = [
 const Home = () => {
     const { user } = useUser()
     const loading = true;
+
+    const handleSignOut = () => {
+
+    }
     return (
         <SafeAreaView className="bg-gray-50">
             <FlatList data={recentRids.slice(0, 5)}
@@ -130,6 +134,16 @@ const Home = () => {
                     </View>
                 )
                 }
+                ListHeaderComponent={() => (
+                    <>
+                        <View className="flex flex-row items-center justify-between  my-5">
+                            <Text className="text-2xl font-bold capitalize">Welcome, {user?.firstName || user?.emailAddresses[0].emailAddress.split('@')[0]}{" "}</Text>
+                            <TouchableOpacity onPress={handleSignOut} className="jusitfy-center items-center w-15 h-15 rounded-full bg-white">
+                                <Image source={icons.out} className="w-4 h-4" />
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                )}
             />
         </SafeAreaView >
     )
