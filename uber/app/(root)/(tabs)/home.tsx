@@ -4,6 +4,8 @@ import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { Link } from "expo-router";
 import RideCard from "@/components/RideCard";
 import { icons, images } from "@/app/constants";
+import GoogleTextInput from "@/components/GoogleTextInput";
+import Map from "@/components/Map";
 
 const recentRids = [
     {
@@ -111,6 +113,9 @@ const Home = () => {
     const handleSignOut = () => {
 
     }
+    const handleDestinationPress = () => {
+
+    }
     return (
         <SafeAreaView className="bg-gray-50">
             <FlatList data={recentRids.slice(0, 5)}
@@ -142,6 +147,20 @@ const Home = () => {
                                 <Image source={icons.out} className="w-4 h-4" />
                             </TouchableOpacity>
                         </View>
+                        <GoogleTextInput
+                            icon={icons.search}
+                            containerStyle="bg-white shadow-md shadow-neutral-300"
+                            handlePress={handleDestinationPress}
+                        />
+                        <>
+                            <Text className="text-xl font-bold mt-5 mb-3">Your Current Location</Text>
+                            <View className="flex flex-row items-center bg-transparent h-[300px]">
+                                <Map />
+                            </View>
+
+
+                        </>
+                        <Text className="text-xl font-bold mt-5 mb-3">Recent Rides</Text>
                     </>
                 )}
             />

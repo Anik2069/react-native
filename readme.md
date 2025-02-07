@@ -15,3 +15,6 @@ npx expo run:android
 eas build -p android --profile preview
 
 #Cache clear
+
+
+Zustand -- state management
