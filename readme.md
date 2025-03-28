@@ -2,6 +2,7 @@
 npx create-expo-app --template
 # Generate Functional component
 Shortcut= rsf
+Shortcut= rnfes
 StyleShet =rnss
 # React Native Nagivator
 npm install @react-navigation/native@^5.
