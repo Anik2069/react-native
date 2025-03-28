@@ -15,6 +15,10 @@ npx expo run:android
 eas build -p android --profile preview
 
 #Cache clear
-
-
 Zustand -- state management
+
+#EMpty App folder
+npm run reset-project
+
+#Generate Metro Config
+npx expo customize metro.config.js
