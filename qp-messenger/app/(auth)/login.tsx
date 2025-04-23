@@ -1,17 +1,36 @@
-import React, { useState } from 'react';
+import axiosInstance from '@/lib/axios';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import Checkbox from 'expo-checkbox';
+import * as SecureStore from "expo-secure-store";
+import { useRouter } from 'expo-router';
 
 export default function Login() {
   const [isChecked, setChecked] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  const handleLogin = async () => {
+    const data = {
+      email: email,
+      password: password
+    }
+    axiosInstance.post('/login', data).then((res) => {
+      console.log("Res data", res.data.user);
+      SecureStore.setItemAsync("token", res.data.accessToken);
+      SecureStore.setItemAsync("user", res.data.user);
 
+      router.push("/(tabs)");
+    }).catch((error) => {
+      console.log("error data", error);
+      alert("Server offline");
+    });;
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-     
+
       <ScrollView contentContainerClassName="justify-center flex-grow px-6 py-10">
         <View className="items-center mb-6">
           <View className="w-24 h-24 rounded-full bg-[#2D7A78] items-center justify-center mb-4">
@@ -55,7 +74,7 @@ export default function Login() {
         <View className="gap-3 space-y-4">
           <TouchableOpacity
             className="w-full h-14 bg-[#2D7A78] rounded-full items-center justify-center"
-          // onPress={handleLogin}
+            onPress={handleLogin}
           >
             <Text className="text-lg font-medium text-white">Log in</Text>
           </TouchableOpacity>

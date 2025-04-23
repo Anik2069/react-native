@@ -1,3 +1,5 @@
+
+import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Platform, SafeAreaView, View, Text, TouchableOpacity, TextInput, FlatList } from 'react-native';
 
 
@@ -11,16 +13,19 @@ export default function HomeScreen() {
     { id: '6', name: 'Haddatul moNir', message: 'You: bye...', time: '4:00 PM', unread: 0, isActive: true, isRecent: true, recentTime: '11m' },
     { id: '7', name: 'Shaikh hasan', message: 'You: ok...', time: '7:08 AM', unread: 0, isActive: false },
   ];
-
+  const router = useRouter();
   const ActiveUser = ({ item }: { item: { id: string; name: string; message: string; time: string; isActive: boolean; isRecent: boolean; recentTime: string; unread: number } }) => {
     const gender = parseInt(item.id) % 2 === 0 ? 'men' : 'women';
     const imageId = 20 + parseInt(item.id);
     const imageUri = `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${parseInt(item.id) + 20}.jpg`;
     console.log(imageUri);
+   
     return (
       <TouchableOpacity
         className="flex-row items-center px-4 py-3"
-      // onPress={() => navigation.navigate('Chat', { user: item })}
+        onPress={() => {
+          router.push('/chat/222');
+        }}
       >
         <View className="relative mr-3">
           <View className="overflow-hidden bg-gray-300 rounded-full w-14 h-14">

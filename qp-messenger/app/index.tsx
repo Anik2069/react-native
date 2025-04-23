@@ -1,10 +1,37 @@
 
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 
 const Home = () => {
-    const isSignedIn = false; // Replace with your actual authentication logic
+    const [isTokenChecked, setIsTokenChecked] = useState(false);
+    const [hasToken, setHasToken] = useState(false);
+    const router = useRouter();
 
-    if (isSignedIn) {
+    useEffect(() => {
+        const checkToken = async () => {
+            try {
+                const token = await SecureStore.getItemAsync("token");
+                console.log(token, "token");
+                if (token) {
+                    setHasToken(true);
+                }
+            } catch (error) {
+                console.error("Error retrieving token:", error);
+            } finally {
+                setIsTokenChecked(true);
+            }
+        };
+
+        checkToken();
+    }, []);
+
+    // Wait until token check is complete
+    if (!isTokenChecked) {
+        return null; // Optionally, you can show a loading indicator here
+    }
+
+    if (hasToken) {
         return <Redirect href={'/(tabs)'} />
     }
 
