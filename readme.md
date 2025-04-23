@@ -18,7 +18,7 @@ eas build -p android --profile preview
 #Cache clear
 Zustand -- state management
 
-#EMpty App folder
+#EMpty App folder 
 npm run reset-project
 
 #Generate Metro Config
