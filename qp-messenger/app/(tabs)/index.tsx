@@ -1,5 +1,7 @@
 
+import axiosInstance from '@/lib/axios';
 import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Platform, SafeAreaView, View, Text, TouchableOpacity, TextInput, FlatList } from 'react-native';
 
 
@@ -14,12 +16,23 @@ export default function HomeScreen() {
     { id: '7', name: 'Shaikh hasan', message: 'You: ok...', time: '7:08 AM', unread: 0, isActive: false },
   ];
   const router = useRouter();
-  const ActiveUser = ({ item }: { item: { id: string; name: string; message: string; time: string; isActive: boolean; isRecent: boolean; recentTime: string; unread: number } }) => {
-    const gender = parseInt(item.id) % 2 === 0 ? 'men' : 'women';
-    const imageId = 20 + parseInt(item.id);
-    const imageUri = `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${parseInt(item.id) + 20}.jpg`;
+  const ActiveUser = ({ item }: {
+    item: {
+      _id: string; name: string;
+      lastmessage: string; time: string;
+      isActive: boolean; isRecent: boolean;
+      recentTime: string;
+      unread: number;
+      lastMessage: {
+        _id: string;
+        content: string;
+      }
+    } 
+  }) => {
+
+    const imageUri = `https://qposs.com:82/uploads/compressed-1744180361737-6514147376594264b1103efe-1744190982680-croppedImageProfile.png`;
     console.log(imageUri);
-   
+
     return (
       <TouchableOpacity
         className="flex-row items-center px-4 py-3"
@@ -50,7 +63,7 @@ export default function HomeScreen() {
             <Text className="text-sm text-gray-500">{item.time}</Text>
           </View>
           <View className="flex-row items-center justify-between mt-1">
-            <Text className="text-gray-500" numberOfLines={1}>{item.message}</Text>
+            <Text className="text-gray-500" numberOfLines={1}>{item?.lastMessage?.content}</Text>
             {item.unread > 0 ? (
               <View className="bg-[#2D7A78] rounded-full w-6 h-6 items-center justify-center">
                 <Text className="text-xs text-white">{item.unread}</Text>
@@ -67,6 +80,15 @@ export default function HomeScreen() {
       </TouchableOpacity>
     );
   }
+
+  const [chats, setChats] = useState();
+  useEffect(() => {
+    console.log('HomeScreen mounted');
+    axiosInstance.get('chats').then((res) => {
+      console.log(res.data.data[0], "res.data");
+      setChats(res.data.data);
+    });
+  }, [])
 
   return (
     <SafeAreaView className="flex-1 mt-10 bg-white">
@@ -103,30 +125,12 @@ export default function HomeScreen() {
       </ScrollView> */}
 
       <FlatList
-        data={CHATS}
+        data={chats}
         renderItem={ActiveUser}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
         ItemSeparatorComponent={() => <View className="h-px ml-20 bg-gray-100" />}
       />
     </SafeAreaView>
   )
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

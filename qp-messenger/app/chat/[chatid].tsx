@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, Phone, Video, Grid, Camera, Image as ImageIcon, Mic, Smile, ThumbsUp } from 'lucide-react-native';
+import { useNavigation } from 'expo-router';
 
 const MESSAGES = [
     { id: '1', text: '👋', time: '21:32', isUser: false },
@@ -22,7 +23,7 @@ export default function ChatScreen() {
     const user = { id: '1', name: 'Jacob' }; // Replace with actual user data
     const [message, setMessage] = useState('');
 
-    const renderMessage = ({ item }: {
+    const renderMessage = ({ item }: {  
         item: {
             id: string; text: string; time: string; isUser: boolean; reactions?: { type: string; count: number }[]; status?: string;
         }
@@ -58,13 +59,14 @@ export default function ChatScreen() {
             )}
         </View>
     );
+    const navigation = useNavigation();
 
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className="flex-row items-center justify-between px-4 py-2 border-b border-gray-200">
                 <View className="flex-row items-center">
                     <TouchableOpacity
-                    // onPress={() => navigation.goBack()} className="mr-2"
+                        onPress={() => navigation.goBack()} className="mr-2"
                     >
                         <ChevronLeft size={28} color="#2D7A78" />
                     </TouchableOpacity>
