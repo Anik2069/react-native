@@ -1,10 +1,11 @@
 import MeterSensor from '@/components/MeterSensor'
 import React, { useEffect, useState } from 'react'
-import { Image, RefreshControl, SafeAreaView, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { Button, Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from 'expo-router';
 import axiosInstance from '@/lib/axios';
 import Badge from '@/components/Badge';
+import WaterTank from '@/components/WaterTank';
 
 function dashboard() {
     const router = useRouter();
@@ -15,7 +16,11 @@ function dashboard() {
     }
 
     useEffect(() => {
-        fetchData();
+        const interval = setInterval(() => {
+            fetchData();
+        }, 2000);
+
+        return () => clearInterval(interval);
     }, []);
 
 
@@ -36,14 +41,30 @@ function dashboard() {
             if (token) {
                 const tempFormData = new FormData();
                 tempFormData.append("token", token);
-                axiosInstance.post("/fetch_api.php", tempFormData, {
+
+                axiosInstance.post("/mqtt/fetch_api_mqtt.php", tempFormData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     }
                 }).then((response) => {
+                    if (response.data.status != "error") {
+                        // setWaterLevel(response.data.data.MeterInfo[0].Value)
+                        setResponseData(response.data.data);
+                    } else {
+                        router.push("/(auth)/sign-in")
+                    }
 
-                    setResponseData(response.data.data);
+
                 })
+
+                // axiosInstance.post("/fetch_api.php", tempFormData, {
+                //     headers: {
+                //         "Content-Type": "multipart/form-data",
+                //     }
+                // }).then((response) => {
+
+                //     setResponseData(response.data.data);
+                // })
             }
         } catch (error) {
             console.error("Error retrieving token:", error);
@@ -62,13 +83,13 @@ function dashboard() {
                         "Content-Type": "multipart/form-data",
                     }
                 }).then((response) => {
-                   
-                    if(response.data.status!="error"){
 
-                    }else{
+                    if (response.data.status != "error") {
+
+                    } else {
                         alert("Something went wrong")
                     }
-                    
+
                 })
             }
         } catch (error) {
@@ -77,6 +98,7 @@ function dashboard() {
         setIsEnabled(previousState => !previousState)
     };
     // console.log(responseData,"responseDataresponseData");
+
     return (
         <SafeAreaView className='h-full '>
             <ScrollView
@@ -165,15 +187,24 @@ function dashboard() {
                 </View>
 
 
-                <View className='p-2 m-2 rounded-lg bg-white'>
+                <View className='p-2 m-2 rounded-lg bg-white justify-center items-center'>
                     <Text className="text-lg font-semibold text-gray-800 mb-4 text-center">
-                        Tank Status
+                        Water Level
                     </Text>
-                    {
+                    <View style={styles.tankContainer}>
+                        {
+                            responseData.sensor_data &&
+                            <WaterTank percentage={responseData.sensor_data} />
+                        }
+
+                    </View>
+
+                    {/* {
                         responseData?.MeterInfo && responseData?.MeterInfo.map((meterData) => (
                             <MeterSensor meterData={meterData} />
                         ))
-                    }
+                    } */}
+
 
 
                 </View>
@@ -183,4 +214,39 @@ function dashboard() {
     )
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f5f5f5",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 30,
+    },
+    tankContainer: {
+        marginBottom: 40,
+    },
+    controls: {
+        width: "100%",
+        alignItems: "center",
+    },
+    label: {
+        fontSize: 18,
+        marginBottom: 10,
+    },
+    slider: {
+        width: "80%",
+        height: 40,
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "80%",
+        marginTop: 20,
+    },
+})
 export default dashboard
