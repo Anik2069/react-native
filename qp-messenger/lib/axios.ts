@@ -8,7 +8,8 @@ let token = "";
 // }
 
 const axiosInstance = axios.create({
-  baseURL: "http://10.81.100.141:9000/api",
+  baseURL: "https://qposs.com:82/api",
+  // baseURL: "http://10.81.100.141:9000/api",
 
   headers: {
     "Content-Type": "application/json",

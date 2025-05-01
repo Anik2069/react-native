@@ -85,8 +85,9 @@ export default function TabsLayout() {
                 }}
             />
 
+
             <Tabs.Screen
-                name="save"
+                name="saved"
                 options={{
                     title: "Save",
                     headerShown: false,
@@ -95,7 +96,6 @@ export default function TabsLayout() {
                     ),
                 }}
             />
-
             <Tabs.Screen
                 name="profile"
                 options={{
@@ -106,6 +106,10 @@ export default function TabsLayout() {
                     ),
                 }}
             />
+
+
+
+
         </Tabs>
     );
 }
