@@ -1,64 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, Phone, Video, Grid, Camera, Image as ImageIcon, Mic, Smile, ThumbsUp } from 'lucide-react-native';
-import { useNavigation } from 'expo-router';
-
-const MESSAGES = [
-    { id: '1', text: '👋', time: '21:32', isUser: false },
-    { id: '2', text: 'Hello, Jacob!', time: '16:44', isUser: false },
-    {
-        id: '3', text: 'How are you doing?', time: '16:44', isUser: false, reactions: [
-            { type: 'like', count: 1 },
-            { type: 'love', count: 1 },
-            { type: 'haha', count: 1 },
-            { type: 'total', count: 5 }
-        ]
-    },
-    { id: '4', text: 'I think top two are', time: '16:45', isUser: true, status: 'sent' },
-    { id: '5', text: 'Hello, Jacob!\nI think top two are:', time: '16:45', isUser: true, status: 'sent' },
-];
+import { useNavigation, useLocalSearchParams } from 'expo-router';
+import { } from 'expo-router'
+import axiosInstance from '@/lib/axios';
+import { useAuthInfo } from '@/hooks/useAuthInfo';
+import * as SecureStore from 'expo-secure-store';
 
 export default function ChatScreen() {
-    const user = { id: '1', name: 'Jacob' }; // Replace with actual user data
-    const [message, setMessage] = useState('');
+    const uuserser = { id: '1', name: 'Jacob' }; // Replace with actual user data
+    const { user } = useAuthInfo('user');
+    const [message, setMessage] = useState([]);
+    console.log("user", user);
+    const { chatid } = useLocalSearchParams();
 
-    const renderMessage = ({ item }: {  
+    useEffect(() => {
+        // Fetch chat data using chatid
+        // Example: fetchChatData(chatid).then(data => setChatData(data));
+        aaa();
+        axiosInstance.get(`/messages/${chatid}?pageNo=1&pageSize=3`).then((res) => {
+            setMessage(res.data.data.reverse());
+           
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+        , [chatid]);
+    const aaa = async () => {
+        const storedValue = await SecureStore.getItemAsync("user");
+        console.log("Stored value  ===== ", storedValue);
+    };
+    console.log("idd", chatid);
+    const renderMessage = ({ item }: {
         item: {
-            id: string; text: string; time: string; isUser: boolean; reactions?: { type: string; count: number }[]; status?: string;
+            _id: string;
+            sender: {
+                _id: string;
+                first_name: string;
+                last_name: string;
+                profile_pic: string;
+                username: string;
+                email: string;
+            };
+            content: string;
+            time: string;
+            reactions?: { type: string; count: number }[];
+            status?: string;
         }
-    }) => (
-        <View className={`px-4 py-2 max-w-[80%] ${item.isUser ? 'self-end' : 'self-start'}`}>
-            {!item.isUser && item.id === '1' && (
-                <View className="items-center justify-center mb-2">
-                    <Text className="text-xs text-gray-400">{item.time}</Text>
-                </View>
-            )}
+    }) => {
+        const isUser = item?.sender?._id == "6514147376594264b1103efe";
+        return (
 
-            <View className={`rounded-3xl p-3 ${item.isUser ? 'bg-[#2D7A78]' : 'bg-gray-200'}`}>
-                <Text className={`text-base ${item.isUser ? 'text-white' : 'text-black'}`}>{item.text}</Text>
+            <View className={`px-4 py-2 max-w-[80%] ${isUser ? 'self-end' : 'self-start'}`}>
+                {!isUser && item._id === '1' && (
+                    <View className="items-center justify-center mb-2">
+                        <Text className="text-xs text-gray-400">{item.time}</Text>
+                    </View>
+                )}
+
+                <View className={`rounded-3xl p-3 ${isUser ? 'bg-[#2D7A78]' : 'bg-gray-200'}`}>
+                    <Text className={`text-base ${isUser ? 'text-white' : 'text-black'}`}>{item.content}</Text>
+                </View>
+
+                {item.reactions && (
+                    <View className="flex-row items-center mt-1">
+                        <View className="flex-row px-2 py-1 bg-white rounded-full shadow-sm">
+                            <Text className="text-xs">👍</Text>
+                            <Text className="text-xs">❤️</Text>
+                            <Text className="text-xs">😄</Text>
+                            {/* <Text className="ml-1 text-xs">{item?.reactions?.total?.count}</Text> */}
+                        </View>
+                    </View>
+                )}
+
+                {isUser && (
+                    <View className="items-end mt-1">
+                        <View className="w-5 h-5 rounded-full border border-[#2D7A78] items-center justify-center">
+                            <View className="w-3 h-3 rounded-full bg-[#2D7A78]" />
+                        </View>
+                    </View>
+                )}
             </View>
 
-            {item.reactions && (
-                <View className="flex-row items-center mt-1">
-                    <View className="flex-row px-2 py-1 bg-white rounded-full shadow-sm">
-                        <Text className="text-xs">👍</Text>
-                        <Text className="text-xs">❤️</Text>
-                        <Text className="text-xs">😄</Text>
-                        {/* <Text className="ml-1 text-xs">{item?.reactions?.total?.count}</Text> */}
-                    </View>
-                </View>
-            )}
-
-            {item.isUser && (
-                <View className="items-end mt-1">
-                    <View className="w-5 h-5 rounded-full border border-[#2D7A78] items-center justify-center">
-                        <View className="w-3 h-3 rounded-full bg-[#2D7A78]" />
-                    </View>
-                </View>
-            )}
-        </View>
-    );
+        )
+    };
     const navigation = useNavigation();
 
     return (
@@ -73,11 +99,11 @@ export default function ChatScreen() {
 
                     <View className="flex-row items-center">
                         <Image
-                            source={{ uri: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${parseInt(user.id) + 40}.jpg` }}
+                            source={{ uri: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${parseInt(user?.id) + 40}.jpg` }}
                             className="w-10 h-10 mr-3 rounded-full"
                         />
                         <View>
-                            <Text className="text-lg font-bold">{user.name}</Text>
+                            <Text className="text-lg font-bold">{user?.name}</Text>
                             <Text className="text-gray-500">Messenger</Text>
                         </View>
                     </View>
@@ -96,15 +122,15 @@ export default function ChatScreen() {
             <View className="flex-1">
                 <View className="items-center py-6">
                     <Image
-                        source={{ uri: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${parseInt(user.id) + 40}.jpg` }}
+                        source={{ uri: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${parseInt(user?.id) + 40}.jpg` }}
                         className="w-32 h-32 mb-4 rounded-full"
                     />
-                    <Text className="text-2xl font-bold">{user.name}</Text>
+                    <Text className="text-2xl font-bold">{user?.name}</Text>
                     <Text className="mt-1 text-gray-500">You're friends on QP</Text>
                 </View>
 
                 <FlatList
-                    data={MESSAGES}
+                    data={message}
                     renderItem={renderMessage}
                     keyExtractor={item => item.id}
                     contentContainerStyle={{ paddingVertical: 16 }}

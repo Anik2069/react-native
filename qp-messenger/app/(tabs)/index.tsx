@@ -23,21 +23,30 @@ export default function HomeScreen() {
       isActive: boolean; isRecent: boolean;
       recentTime: string;
       unread: number;
+      participants: [],
       lastMessage: {
         _id: string;
         content: string;
+        sender: {
+          _id: string;
+          first_name: string;
+          last_name: string;
+          profile_pic: string;
+          username: string;
+
+        }
       }
-    } 
+    }
   }) => {
 
     const imageUri = `https://qposs.com:82/uploads/compressed-1744180361737-6514147376594264b1103efe-1744190982680-croppedImageProfile.png`;
-    console.log(imageUri);
+    // console.log(imageUri);r
 
     return (
       <TouchableOpacity
         className="flex-row items-center px-4 py-3"
         onPress={() => {
-          router.push('/chat/222');
+          router.push(`/chat/${item._id}`);
         }}
       >
         <View className="relative mr-3">
@@ -59,7 +68,7 @@ export default function HomeScreen() {
 
         <View className="flex-1">
           <View className="flex-row justify-between">
-            <Text className="text-base font-semibold">{item.name}</Text>
+            <Text className="text-base font-semibold">{item?.lastMessage?.sender?.first_name}</Text>
             <Text className="text-sm text-gray-500">{item.time}</Text>
           </View>
           <View className="flex-row items-center justify-between mt-1">
@@ -85,7 +94,7 @@ export default function HomeScreen() {
   useEffect(() => {
     console.log('HomeScreen mounted');
     axiosInstance.get('chats').then((res) => {
-      console.log(res.data.data[0], "res.data");
+      console.log(res.data.data[0].lastMessage, "res.data");
       setChats(res.data.data);
     });
   }, [])
