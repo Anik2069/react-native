@@ -8,7 +8,7 @@ let token = "";
 // }
 
 const axiosInstance = axios.create({
-    baseURL: "http://103.115.255.11:8080/user_api",
+    baseURL: "http://103.115.255.11:80/user_api",
 
     headers: {
         "Content-Type": "application/json",
