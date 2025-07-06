@@ -2,7 +2,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 const axiosInstance = axios.create({
-  baseURL: "https://qposs.com:82/api",
+  baseURL: "http://192.168.0.106:9000/api",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

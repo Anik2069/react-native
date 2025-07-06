@@ -8,7 +8,7 @@ export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socketInstance = io("https://qposs.com:82", {
+        const socketInstance = io("http://192.168.0.106:9000", {
             transports: ["websocket"],
             autoConnect: true,
         });

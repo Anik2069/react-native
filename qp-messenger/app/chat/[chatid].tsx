@@ -12,26 +12,40 @@ export default function ChatScreen() {
     const uuserser = { id: '1', name: 'Jacob' }; // Replace with actual user data
     const { user } = useAuthInfo('user');
     const [message, setMessage] = useState([]);
-    console.log("user", user);
+    const [chat, setChat] = useState();
+    const [header, setHeader] = useState();
+    console.log("user", user?.first_name);
     const { chatid } = useLocalSearchParams();
-
+    console.log("==============", chatid);
     useEffect(() => {
         // Fetch chat data using chatid
-        // Example: fetchChatData(chatid).then(data => setChatData(data));
-        aaa();
-        axiosInstance.get(`/messages/${chatid}?pageNo=1&pageSize=3`).then((res) => {
-            setMessage(res.data.data.reverse());
-           
+        // Example: fetchChatData(chatid).then(data => setChatData(data));  
+        axiosInstance.post(`/chats/c/${chatid}`).then((res) => {
+            const response = res.data.data;
+            setChat(res.data.data);
+            const otherParticipant = response.participants.find(
+                item => item._id.toString() !== user._id.toString()
+            );
+            console.log("==============");
+            console.log(otherParticipant);
+
+            setHeader(otherParticipant?.first_name);
+            axiosInstance.get(`/messages/${response._id}?pageNo=1&pageSize=3`).then((res) => {
+                setMessage(res.data.data.reverse());
+
+            }).catch((err) => {
+                console.log(err);
+            });
+
+
         }).catch((err) => {
-            console.log(err);
+            console.log(err)
         });
+
     }
         , [chatid]);
-    const aaa = async () => {
-        const storedValue = await SecureStore.getItemAsync("user");
-        console.log("Stored value  ===== ", storedValue);
-    };
-    console.log("idd", chatid);
+
+    console.log(message[0]);
     const renderMessage = ({ item }: {
         item: {
             _id: string;
@@ -49,7 +63,7 @@ export default function ChatScreen() {
             status?: string;
         }
     }) => {
-        const isUser = item?.sender?._id == "6514147376594264b1103efe";
+        const isUser = item?.sender?._id == user._id;
         return (
 
             <View className={`px-4 py-2 max-w-[80%] ${isUser ? 'self-end' : 'self-start'}`}>
@@ -103,7 +117,7 @@ export default function ChatScreen() {
                             className="w-10 h-10 mr-3 rounded-full"
                         />
                         <View>
-                            <Text className="text-lg font-bold">{user?.name}</Text>
+                            <Text className="text-lg font-bold">{header}</Text>
                             <Text className="text-gray-500">Messenger</Text>
                         </View>
                     </View>

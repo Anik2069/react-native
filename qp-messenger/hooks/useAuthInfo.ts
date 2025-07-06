@@ -10,7 +10,7 @@ export function useAuthInfo<T = any>(key: string) {
     useEffect(() => {
         const load = async () => {
             try {
-                const storedValue = await SecureStore.getItemAsync("user");
+                const storedValue = await SecureStore.getItemAsync(key);
                 console.log("Stored value", storedValue);
                 if (storedValue) {
                     setUser(JSON.parse(storedValue));
