@@ -11,7 +11,9 @@ export default function HomeScreen() {
   const { user } = useAuthInfo('user');
   const ActiveUser = ({ item }: {
     item: {
-      _id: string; name: string;
+      _id: string;
+      name: string;
+      isGroupChat: boolean;
       lastmessage: string; time: string;
       isActive: boolean; isRecent: boolean;
       recentTime: string;
@@ -40,7 +42,7 @@ export default function HomeScreen() {
       item => item._id.toString() !== user._id.toString()
     );
 
-    console.log(otherParticipant, "others");
+    console.log(otherParticipant?.first_name, "others");
 
     receiverId = otherParticipant?._id;
 
@@ -51,7 +53,7 @@ export default function HomeScreen() {
       <TouchableOpacity
         className="flex-row items-center px-4 py-3"
         onPress={() => {
-          router.push(`/chat/${receiverId}`);
+          router.push(`/chat/${otherParticipant?._id}`);
         }}
       >
         <View className="relative mr-3">
@@ -73,7 +75,7 @@ export default function HomeScreen() {
 
         <View className="flex-1">
           <View className="flex-row justify-between">
-            <Text className="text-base font-semibold">{item?.lastMessage?.sender?.first_name}</Text>
+            <Text className="text-base font-semibold">{otherParticipant?.first_name}</Text>
             <Text className="text-sm text-gray-500">{item.time}</Text>
           </View>
           <View className="flex-row items-center justify-between mt-1">

@@ -7,9 +7,13 @@ import { } from 'expo-router'
 import axiosInstance from '@/lib/axios';
 import { useAuthInfo } from '@/hooks/useAuthInfo';
 import * as SecureStore from 'expo-secure-store';
+import { useSocket } from '@/services/SocketContext';
 
 export default function ChatScreen() {
+    const MESSAGE_RECEIVED_EVENT = "messageReceived";
+    const { socket } = useSocket();
     const uuserser = { id: '1', name: 'Jacob' }; // Replace with actual user data
+
     const { user } = useAuthInfo('user');
     const [message, setMessage] = useState([]);
     const [chat, setChat] = useState();
@@ -22,6 +26,9 @@ export default function ChatScreen() {
         // Example: fetchChatData(chatid).then(data => setChatData(data));  
         axiosInstance.post(`/chats/c/${chatid}`).then((res) => {
             const response = res.data.data;
+            console.log("=======chatr=======");
+            console.log(response._id);
+            console.log("==============");
             setChat(res.data.data);
             const otherParticipant = response.participants.find(
                 item => item._id.toString() !== user._id.toString()
@@ -42,9 +49,42 @@ export default function ChatScreen() {
             console.log(err)
         });
 
-    }
-        , [chatid]);
+    }, [chatid, user]);
 
+
+    useEffect(() => {
+        // If the socket isn't initialized, we don't set up listeners.
+        console.log("Socket returned");
+        if (!socket) return;
+        console.log(socket.id, "Socket ID");
+        // Listener for when a new message is received.
+        socket.on(MESSAGE_RECEIVED_EVENT, onMessageReceived);
+
+        return () => {
+            // Remove all the event listeners we set up to avoid memory leaks and unintended behaviors.
+
+            socket.off(MESSAGE_RECEIVED_EVENT, onMessageReceived);
+
+        };
+
+    }, [ chatid, user,socket]);
+    const onMessageReceived = (message) => {
+        3
+        console.log("socket message", message);
+        // Check if the received message belongs to the currently active chat
+        // if (message?.chat !== currentChat.current?._id) {
+        //     // If not, update the list of unread messages
+        //     setUnreadMessages((prev) => [message, ...prev]);
+        // } else {
+        //     // If it belongs to the current chat, update the messages list for the active chat
+        //     setMessages((prev) => [message, ...prev]);
+        // }
+
+        // // Update the last message for the chat to which the received message belongs
+        // updateChatLastMessage(message.chat || "", message);
+    };
+
+    console.log("final message", message[0]);
     console.log(message[0]);
     const renderMessage = ({ item }: {
         item: {
@@ -146,7 +186,7 @@ export default function ChatScreen() {
                 <FlatList
                     data={message}
                     renderItem={renderMessage}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => item?._id}
                     contentContainerStyle={{ paddingVertical: 16 }}
                     inverted={false}
                 />
