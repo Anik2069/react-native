@@ -1,4 +1,5 @@
 
+import { useAuthInfo } from '@/hooks/useAuthInfo';
 import axiosInstance from '@/lib/axios';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -6,19 +7,13 @@ import { Image, StyleSheet, Platform, SafeAreaView, View, Text, TouchableOpacity
 
 
 export default function HomeScreen() {
-  const CHATS = [
-    { id: '1', name: 'Tanim Khan', message: 'You: Thanks Bro...', time: '5:04 PM', unread: 3, isActive: true },
-    { id: '2', name: 'Haddatul moNir', message: 'You: bye...', time: '4:00 PM', unread: 0, isActive: true, isRecent: true, recentTime: '11m' },
-    { id: '3', name: 'Haddatul moNir', message: 'You: bye...', time: '4:00 PM', unread: 0, isActive: true, isRecent: true, recentTime: '11m' },
-    { id: '4', name: 'Haddatul moNir', message: 'You: bye...', time: '4:00 PM', unread: 0, isActive: true, isRecent: true, recentTime: '11m' },
-    { id: '5', name: 'Dev Teaam', message: 'You: bye...', time: '4:00 PM', unread: 0, isActive: false },
-    { id: '6', name: 'Haddatul moNir', message: 'You: bye...', time: '4:00 PM', unread: 0, isActive: true, isRecent: true, recentTime: '11m' },
-    { id: '7', name: 'Shaikh hasan', message: 'You: ok...', time: '7:08 AM', unread: 0, isActive: false },
-  ];
   const router = useRouter();
+  const { user } = useAuthInfo('user');
   const ActiveUser = ({ item }: {
     item: {
-      _id: string; name: string;
+      _id: string;
+      name: string;
+      isGroupChat: boolean;
       lastmessage: string; time: string;
       isActive: boolean; isRecent: boolean;
       recentTime: string;
@@ -42,11 +37,23 @@ export default function HomeScreen() {
     const imageUri = `https://qposs.com:82/uploads/compressed-1744180361737-6514147376594264b1103efe-1744190982680-croppedImageProfile.png`;
     // console.log(imageUri);r
 
+    let receiverId;
+    const otherParticipant = item.participants.find(
+      item => item._id.toString() !== user._id.toString()
+    );
+
+    console.log(otherParticipant?.first_name, "others");
+
+    receiverId = otherParticipant?._id;
+
+    console.log("==============");
+    console.log(receiverId);
+    console.log("==============");
     return (
       <TouchableOpacity
         className="flex-row items-center px-4 py-3"
         onPress={() => {
-          router.push(`/chat/${item._id}`);
+          router.push(`/chat/${otherParticipant?._id}`);
         }}
       >
         <View className="relative mr-3">
@@ -68,7 +75,7 @@ export default function HomeScreen() {
 
         <View className="flex-1">
           <View className="flex-row justify-between">
-            <Text className="text-base font-semibold">{item?.lastMessage?.sender?.first_name}</Text>
+            <Text className="text-base font-semibold">{otherParticipant?.first_name}</Text>
             <Text className="text-sm text-gray-500">{item.time}</Text>
           </View>
           <View className="flex-row items-center justify-between mt-1">
@@ -94,8 +101,8 @@ export default function HomeScreen() {
   useEffect(() => {
     console.log('HomeScreen mounted');
     axiosInstance.get('chats').then((res) => {
-      console.log(res.data.data[0].lastMessage, "res.data");
-      setChats(res.data.data);
+      console.log(res.data.data[0], "res.data");
+      setChats([res.data.data[0]]);
     });
   }, [])
 

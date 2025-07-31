@@ -19,12 +19,12 @@ export default function Login() {
     axiosInstance.post('/login', data).then((res) => {
       console.log("Res data", res.data.user);
       SecureStore.setItemAsync("token", res.data.accessToken);
-      SecureStore.setItemAsync("user", res.data.user);
+      SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
 
       router.push("/(tabs)");
     }).catch((error) => {
       console.log("error data", error);
-      alert("Server offline");
+      // alert("Server offline");
     });;
   };
 

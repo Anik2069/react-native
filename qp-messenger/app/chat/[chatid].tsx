@@ -7,31 +7,85 @@ import { } from 'expo-router'
 import axiosInstance from '@/lib/axios';
 import { useAuthInfo } from '@/hooks/useAuthInfo';
 import * as SecureStore from 'expo-secure-store';
+import { useSocket } from '@/services/SocketContext';
 
 export default function ChatScreen() {
+    const MESSAGE_RECEIVED_EVENT = "messageReceived";
+    const { socket } = useSocket();
     const uuserser = { id: '1', name: 'Jacob' }; // Replace with actual user data
+
     const { user } = useAuthInfo('user');
     const [message, setMessage] = useState([]);
-    console.log("user", user);
+    const [chat, setChat] = useState();
+    const [header, setHeader] = useState();
+    console.log("user", user?.first_name);
     const { chatid } = useLocalSearchParams();
-
+    console.log("==============", chatid);
     useEffect(() => {
         // Fetch chat data using chatid
-        // Example: fetchChatData(chatid).then(data => setChatData(data));
-        aaa();
-        axiosInstance.get(`/messages/${chatid}?pageNo=1&pageSize=3`).then((res) => {
-            setMessage(res.data.data.reverse());
-           
+        // Example: fetchChatData(chatid).then(data => setChatData(data));  
+        axiosInstance.post(`/chats/c/${chatid}`).then((res) => {
+            const response = res.data.data;
+            console.log("=======chatr=======");
+            console.log(response._id);
+            console.log("==============");
+            setChat(res.data.data);
+            const otherParticipant = response.participants.find(
+                item => item._id.toString() !== user._id.toString()
+            );
+            console.log("==============");
+            console.log(otherParticipant);
+
+            setHeader(otherParticipant?.first_name);
+            axiosInstance.get(`/messages/${response._id}?pageNo=1&pageSize=3`).then((res) => {
+                setMessage(res.data.data.reverse());
+
+            }).catch((err) => {
+                console.log(err);
+            });
+
+
         }).catch((err) => {
-            console.log(err);
+            console.log(err)
         });
-    }
-        , [chatid]);
-    const aaa = async () => {
-        const storedValue = await SecureStore.getItemAsync("user");
-        console.log("Stored value  ===== ", storedValue);
+
+    }, [chatid, user]);
+
+
+    useEffect(() => {
+        // If the socket isn't initialized, we don't set up listeners.
+        console.log("Socket returned");
+        if (!socket) return;
+        console.log(socket.id, "Socket ID");
+        // Listener for when a new message is received.
+        socket.on(MESSAGE_RECEIVED_EVENT, onMessageReceived);
+
+        return () => {
+            // Remove all the event listeners we set up to avoid memory leaks and unintended behaviors.
+
+            socket.off(MESSAGE_RECEIVED_EVENT, onMessageReceived);
+
+        };
+
+    }, [ chatid, user,socket]);
+    const onMessageReceived = (message) => {
+        3
+        console.log("socket message", message);
+        // Check if the received message belongs to the currently active chat
+        // if (message?.chat !== currentChat.current?._id) {
+        //     // If not, update the list of unread messages
+        //     setUnreadMessages((prev) => [message, ...prev]);
+        // } else {
+        //     // If it belongs to the current chat, update the messages list for the active chat
+        //     setMessages((prev) => [message, ...prev]);
+        // }
+
+        // // Update the last message for the chat to which the received message belongs
+        // updateChatLastMessage(message.chat || "", message);
     };
-    console.log("idd", chatid);
+
+    console.log("final message", message[0]);
+    console.log(message[0]);
     const renderMessage = ({ item }: {
         item: {
             _id: string;
@@ -49,7 +103,7 @@ export default function ChatScreen() {
             status?: string;
         }
     }) => {
-        const isUser = item?.sender?._id == "6514147376594264b1103efe";
+        const isUser = item?.sender?._id == user._id;
         return (
 
             <View className={`px-4 py-2 max-w-[80%] ${isUser ? 'self-end' : 'self-start'}`}>
@@ -103,7 +157,7 @@ export default function ChatScreen() {
                             className="w-10 h-10 mr-3 rounded-full"
                         />
                         <View>
-                            <Text className="text-lg font-bold">{user?.name}</Text>
+                            <Text className="text-lg font-bold">{header}</Text>
                             <Text className="text-gray-500">Messenger</Text>
                         </View>
                     </View>
@@ -132,7 +186,7 @@ export default function ChatScreen() {
                 <FlatList
                     data={message}
                     renderItem={renderMessage}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => item?._id}
                     contentContainerStyle={{ paddingVertical: 16 }}
                     inverted={false}
                 />
