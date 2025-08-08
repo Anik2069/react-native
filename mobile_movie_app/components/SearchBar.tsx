@@ -1,12 +1,25 @@
 import { icons } from '@/constants/icons'
 import React from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, Text, TextInput, View } from 'react-native'
 
-function SearchBar() {
+interface Props {
+    placeholder: string,
+    onPress?: () => void
+}
+
+function SearchBar({ onPress, placeholder }: Props) {
     return (
         <View className='flex-row items-center bg-dard-200 rounded-full px-5 py-4'>
             <Image source={icons.search} className='size-5' resizeMode="contain" tintColor="#ab8bff" />
-            <Text className='text-white'>SearchBar</Text>
+            <TextInput onPress={onPress}
+                placeholder={placeholder}
+                value=''
+                onChange={() => {
+
+                }}
+                placeholderTextColor="#ab8bff"
+                className='flex-1 ml-2 text-white'
+            />
         </View>
     )
 }
