@@ -7,6 +7,7 @@ import { icons } from '@/constants/icons'
 import { useRouter } from 'expo-router'
 import useFetch from '@/services/useFetch'
 import SearchBar from '@/components/SearchBar'
+import { updateSearchCount } from '@/services/appwrite'
 
 const search = () => {
   const router = useRouter();
@@ -19,14 +20,22 @@ const search = () => {
   );
 
   useEffect(() => {
-    const func = async () => {
-      if (searchQuery.trim()) {
+    // console.log(movies[0])
+
+    const timeoutId = setTimeout(async () => {
+      if (searchQuery) {
         await loadMovies();
+
+        if (movies?.length > 0 && movies?.[0]) {
+          updateSearchCount(searchQuery, movies[0]);
+        }
       } else {
         reset()
       }
-    }
-    func()
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+
   }, [searchQuery])
 
   return (
@@ -81,6 +90,13 @@ const search = () => {
             }
 
           </>
+        }
+        ListEmptyComponent={
+          !movieLoading && !movieError ? (
+            <View className='mt-10 px-4'>
+              <Text className="text-center text-gray-500">{searchQuery.trim() ? 'No Movies found' : 'Search for a movie'}</Text>
+            </View>
+          ) : null
         }
       />
 
