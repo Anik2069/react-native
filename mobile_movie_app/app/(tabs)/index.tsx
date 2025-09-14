@@ -17,7 +17,7 @@ export default function Index() {
       query: ""
     })
   );
-  console.log(movies);
+
 
   return (
     <View className="flex-1 bg-primary">
