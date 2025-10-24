@@ -1,5 +1,5 @@
 import MeterSensor from '@/components/MeterSensor'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from 'expo-router';
@@ -10,19 +10,24 @@ import WaterTank from '@/components/WaterTank';
 function dashboard() {
     const router = useRouter();
     const [responseData, setResponseData] = useState([]);
+    const intervalRef = useRef<number | null>(null);
+
     const handleLogout = () => {
         SecureStore.setItemAsync("token", "");
         router.push("/(auth)/sign-in");
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        intervalRef.current = setInterval(() => {
             fetchData();
         }, 2000);
 
-        return () => clearInterval(interval);
+        return () => {
+            if (intervalRef.current !== null) {
+                clearInterval(intervalRef.current);
+            }
+        };
     }, []);
-
 
 
     const [refreshing, setRefreshing] = useState(false);
@@ -35,6 +40,7 @@ function dashboard() {
 
 
     const fetchData = async () => {
+        console.log("Fetching data...");
         try {
             const token = await SecureStore.getItemAsync("token");
 
@@ -48,9 +54,13 @@ function dashboard() {
                     }
                 }).then((response) => {
                     if (response.data.status != "error") {
+
                         // setWaterLevel(response.data.data.MeterInfo[0].Value)
                         setResponseData(response.data.data);
                     } else {
+                        if (intervalRef.current !== null) {
+                            clearInterval(intervalRef.current);
+                        }
                         router.push("/(auth)/sign-in")
                     }
 
@@ -78,12 +88,14 @@ function dashboard() {
             if (token) {
                 const tempFormData = new FormData();
                 tempFormData.append("token", token);
-                axiosInstance.post("/pump_on_api.php", tempFormData, {
+                tempFormData.append("device_id", token);
+                tempFormData.append("status", !isEnabled ? "ON" : "OFF");
+                axiosInstance.post("/loadPublish.php", tempFormData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     }
                 }).then((response) => {
-
+                    console.log(response.status);
                     if (response.data.status != "error") {
 
                     } else {
