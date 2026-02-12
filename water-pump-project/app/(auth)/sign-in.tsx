@@ -54,9 +54,11 @@ function signIn() {
 
   return (
     <View className='h-full p-2 bg-white'>
-      <View className='flex flex-col p-5 pt-10 h-[40%] text-center justify-center items-center '>
+      <View className='flex flex-col p-5 pt-10 h-[40%] text-center justify-end items-center '>
         <View>
-          <Image source={require('@/assets/images/logo.jpg')} />
+          <Image source={require('@/assets/images/logo.jpg')}
+          style={{ width: 120, height: 120, resizeMode: 'contain' }}
+          />
         </View>
 
         <View>
