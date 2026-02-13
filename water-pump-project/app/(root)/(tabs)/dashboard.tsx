@@ -82,32 +82,37 @@ function dashboard() {
     };
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = async () => {
+        const previousState = isEnabled;
+        const newState = !previousState;
+        setIsEnabled(newState); // Optimistic update
+
         try {
             const token = await SecureStore.getItemAsync("token");
 
             if (token) {
                 const tempFormData = new FormData();
                 tempFormData.append("token", token);
-                tempFormData.append("device_id", token);
-                tempFormData.append("status", !isEnabled ? "ON" : "OFF");
-                axiosInstance.post("/loadPublish.php", tempFormData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    }
-                }).then((response) => {
-                    console.log(response.status);
-                    if (response.data.status != "error") {
+                tempFormData.append("status", newState ? "ON" : "OFF");
+                console.log(`Sending Pump Control: ${newState ? "ON" : "OFF"}`);
 
-                    } else {
-                        alert("Something went wrong")
-                    }
+                // Remove manual Content-Type header to allow Axios to set the boundary correctly
+                const response = await axiosInstance.post("pump_control_api.php", tempFormData);
 
-                })
+                console.log("Pump Control Response:", response.data);
+
+                if (response.data.status === "error") {
+                    alert("Failed: " + (response.data.message || "Unknown error"));
+                    setIsEnabled(previousState); // Revert
+                }
+            } else {
+                console.error("No token found");
+                setIsEnabled(previousState);
             }
         } catch (error) {
-            console.error("Error retrieving token:", error);
+            console.error("Pump Control Error:", error);
+            alert("Failed to connect to pump controller.");
+            setIsEnabled(previousState); // Revert
         }
-        setIsEnabled(previousState => !previousState)
     };
     // console.log(responseData,"responseDataresponseData");
 
