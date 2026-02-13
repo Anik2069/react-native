@@ -64,9 +64,10 @@ export default function History() {
         <SafeAreaView className="flex-1 bg-gray-50">
             <ScrollView
                 className="p-4"
+                contentContainerStyle={{ paddingBottom: 150 }}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
             >
-                <Text className="text-2xl font-bold text-gray-800 mb-6 text-center">Pump Usage History</Text>
+                <Text className="text-2xl font-bold text-gray-800 mb-6 mt-8 text-center">Pump Usage History</Text>
 
                 {historyData.length === 0 ? (
                     <Text className="text-center text-gray-500 mt-10">No history data available.</Text>

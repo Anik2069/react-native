@@ -119,7 +119,7 @@ function dashboard() {
     return (
         <SafeAreaView className='h-full '>
             <ScrollView
-                className="h-full"
+                className="h-full pt-10"
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }
@@ -135,7 +135,7 @@ function dashboard() {
 
                     {/* Center - Title */}
                     <View className="flex-1 items-center">
-                        <Text className="text-xl font-semibold text-gray-800">Water Pump Project</Text>
+                        <Text className="text-xl font-semibold text-gray-800">Smart Pump Controller</Text>
                     </View>
 
                     {/* Right - Logout Button */}
@@ -189,7 +189,7 @@ function dashboard() {
                 </View>
                 <View className="p-2 m-2 bg-white flex flex-row  justify-between rounded-md">
                     <View className="flex-row items-center">
-                        <Text>Meter Status: </Text>
+                        <Text>Pump Status: </Text>
                         <Badge status={responseData?.MotorStatus?.Value} />
                     </View>
                     <View className="ml-4">
