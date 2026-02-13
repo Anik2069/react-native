@@ -9,7 +9,7 @@ import WaterTank from '@/components/WaterTank';
 
 function dashboard() {
     const router = useRouter();
-    const [responseData, setResponseData] = useState([]);
+    const [responseData, setResponseData] = useState<any>({});
     const intervalRef = useRef<number | null>(null);
 
     const handleLogout = () => {
@@ -219,6 +219,12 @@ function dashboard() {
 
 
 
+                </View>
+
+                <View className="mb-6 items-center">
+                    <Text className="text-gray-500 text-sm font-medium">
+                        Last Communication: {responseData?.last_comunication_time || "N/A"}
+                    </Text>
                 </View>
             </ScrollView>
         </SafeAreaView >
