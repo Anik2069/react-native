@@ -7,7 +7,7 @@ function layout() {
     return (
 
         <Stack>
-            <Stack.Screen name="dashboard" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
 
     )
