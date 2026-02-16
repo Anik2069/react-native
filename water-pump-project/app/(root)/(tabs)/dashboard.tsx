@@ -9,7 +9,7 @@ import WaterTank from '@/components/WaterTank';
 
 function dashboard() {
     const router = useRouter();
-    const [responseData, setResponseData] = useState([]);
+    const [responseData, setResponseData] = useState<any>({});
     const intervalRef = useRef<number | null>(null);
 
     const handleLogout = () => {
@@ -82,39 +82,44 @@ function dashboard() {
     };
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = async () => {
+        const previousState = isEnabled;
+        const newState = !previousState;
+        setIsEnabled(newState); // Optimistic update
+
         try {
             const token = await SecureStore.getItemAsync("token");
 
             if (token) {
                 const tempFormData = new FormData();
                 tempFormData.append("token", token);
-                tempFormData.append("device_id", token);
-                tempFormData.append("status", !isEnabled ? "ON" : "OFF");
-                axiosInstance.post("/loadPublish.php", tempFormData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    }
-                }).then((response) => {
-                    console.log(response.status);
-                    if (response.data.status != "error") {
+                tempFormData.append("status", newState ? "ON" : "OFF");
+                console.log(`Sending Pump Control: ${newState ? "ON" : "OFF"}`);
 
-                    } else {
-                        alert("Something went wrong")
-                    }
+                // Remove manual Content-Type header to allow Axios to set the boundary correctly
+                const response = await axiosInstance.post("pump_control_api.php", tempFormData);
 
-                })
+                console.log("Pump Control Response:", response.data);
+
+                if (response.data.status === "error") {
+                    alert("Failed: " + (response.data.message || "Unknown error"));
+                    setIsEnabled(previousState); // Revert
+                }
+            } else {
+                console.error("No token found");
+                setIsEnabled(previousState);
             }
         } catch (error) {
-            console.error("Error retrieving token:", error);
+            console.error("Pump Control Error:", error);
+            alert("Failed to connect to pump controller.");
+            setIsEnabled(previousState); // Revert
         }
-        setIsEnabled(previousState => !previousState)
     };
     // console.log(responseData,"responseDataresponseData");
 
     return (
         <SafeAreaView className='h-full '>
             <ScrollView
-                className="h-full"
+                className="h-full pt-10"
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }
@@ -130,7 +135,7 @@ function dashboard() {
 
                     {/* Center - Title */}
                     <View className="flex-1 items-center">
-                        <Text className="text-xl font-semibold text-gray-800">Water Pump Project</Text>
+                        <Text className="text-xl font-semibold text-gray-800">Smart Pump Controller</Text>
                     </View>
 
                     {/* Right - Logout Button */}
@@ -184,7 +189,7 @@ function dashboard() {
                 </View>
                 <View className="p-2 m-2 bg-white flex flex-row  justify-between rounded-md">
                     <View className="flex-row items-center">
-                        <Text>Meter Status: </Text>
+                        <Text>Pump Status: </Text>
                         <Badge status={responseData?.MotorStatus?.Value} />
                     </View>
                     <View className="ml-4">
@@ -219,6 +224,12 @@ function dashboard() {
 
 
 
+                </View>
+
+                <View className="mb-6 items-center">
+                    <Text className="text-gray-500 text-sm font-medium">
+                        Last Communication: {responseData?.last_comunication_time || "N/A"}
+                    </Text>
                 </View>
             </ScrollView>
         </SafeAreaView >

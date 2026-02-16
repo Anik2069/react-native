@@ -1,85 +1,60 @@
-import MeterSensor from '@/components/MeterSensor'
-import React, { useEffect, useRef, useState } from 'react'
-import { Button, Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react';
+import { Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as SecureStore from "expo-secure-store";
 import { useRouter } from 'expo-router';
 import axiosInstance from '@/lib/axios';
-import Badge from '@/components/Badge';
-import WaterTank from '@/components/WaterTank';
 import PumpConfigForm from '@/components/PumpConfigForm';
 
-function dashboard() {
+export default function Config() {
     const router = useRouter();
-    const [responseData, setResponseData] = useState([]);
-    const intervalRef = useRef<number | null>(null);
+    const [fetchedData, setFetchedData] = useState<any>(null);
+    const [refreshing, setRefreshing] = useState(false);
 
     const handleLogout = () => {
         SecureStore.setItemAsync("token", "");
         router.push("/(auth)/sign-in");
     }
 
+    const fetchConfigData = useCallback(async () => {
+        console.log("Fetching data...Config Page");
+        try {
+            const token = await SecureStore.getItemAsync("token");
+            if (token) {
+                const formData = new FormData();
+                formData.append("token", token);
 
-    const [refreshing, setRefreshing] = useState(false);
+                const response = await axiosInstance.post("fetch_config_api.php", formData);
+                console.log("Config Page Data:", response.data);
+
+                if (response.data && response.data.status !== "error") {
+                    setFetchedData(response.data);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching config:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchConfigData();
+    }, [fetchConfigData]);
 
     const handleRefresh = async () => {
         setRefreshing(true);
-        await fetchData();
+        await fetchConfigData();
         setRefreshing(false);
     };
 
-
-    const fetchData = async () => {
-        console.log("Fetching data...Config");
-        try {
-            const token = await SecureStore.getItemAsync("token");
-
-            if (token) {
-                const tempFormData = new FormData();
-                tempFormData.append("token", token);
-
-                axiosInstance.post("/mqtt/fetch_api_mqtt.php", tempFormData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    }
-                }).then((response) => {
-                    if (response.data.status != "error") {
-
-                        // setWaterLevel(response.data.data.MeterInfo[0].Value)
-                        setResponseData(response.data.data);
-                    } else {
-                        if (intervalRef.current !== null) {
-                            clearInterval(intervalRef.current);
-                        }
-                        router.push("/(auth)/sign-in")
-                    }
-
-
-                })
-
-                // axiosInstance.post("/fetch_api.php", tempFormData, {
-                //     headers: {
-                //         "Content-Type": "multipart/form-data",
-                //     }
-                // }).then((response) => {
-
-                //     setResponseData(response.data.data);
-                // })
-            }
-        } catch (error) {
-            console.error("Error retrieving token:", error);
-        }
-    };
-    const [isEnabled, setIsEnabled] = useState(false);
-
     return (
-        <SafeAreaView className='h-full '>
+        <SafeAreaView className='h-full flex-1 bg-gray-50'>
             <ScrollView
-                className="h-full"
+                className="h-full pt-10"
+                contentContainerStyle={{ paddingBottom: 150 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }
             >
-                <View className="flex flex-row justify-between items-center shadow-lg bg-white p-4 rounded-lg">
+                <View className="flex flex-row justify-between items-center shadow-lg bg-white p-4 rounded-lg mb-4">
                     {/* Left - Logo */}
                     <View className="flex items-center">
                         <Image
@@ -90,7 +65,7 @@ function dashboard() {
 
                     {/* Center - Title */}
                     <View className="flex-1 items-center">
-                        <Text className="text-xl font-semibold text-gray-800">Water Pump Project</Text>
+                        <Text className="text-xl font-semibold text-gray-800">Smart Pump Controller</Text>
                     </View>
 
                     {/* Right - Logout Button */}
@@ -99,58 +74,62 @@ function dashboard() {
                             onPress={handleLogout}
                             className="flex-row items-center p-2 rounded-md bg-red-500 hover:bg-red-400 transition-all duration-200"
                         >
-                            {/* <Ionicons name="log-out" size={20} color="white" className="mr-2" /> */}
                             <Text className="text-white font-medium">Logout</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View>
-                    {/* <Text>You are logged in</Text> */}
+
+                {/* Form Section */}
+                <View className="bg-white rounded-lg shadow-lg p-2 m-2">
+                    <PumpConfigForm onUpdate={fetchConfigData} />
                 </View>
 
-                <View className="bg-white rounded-lg shadow-lg p-2 m-2">
-                    <PumpConfigForm />
+                {/* Display Fetched Data Section (Current Config) */}
+                <View className="m-2 mt-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                    <Text className="text-lg font-bold text-gray-800 mb-4 text-center">Current Configuration</Text>
+                    {fetchedData && fetchedData.data ? (
+                        <View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Pump Height:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.tank_height || "--"} cm</Text>
+                            </View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Pump Gap:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.top_gap || "--"} cm</Text>
+                            </View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Pump Start Level:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.p_start || "--"}%</Text>
+                            </View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Pump Stop Level:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.p_stop || "--"}%</Text>
+                            </View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Timer:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.timer || "--"} sec</Text>
+                            </View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Unit Cost:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.unit_cost || "--"} BDT</Text>
+                            </View>
+                            <View className="flex-row items-center py-2 border-b border-gray-100 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Auto Mode:</Text>
+                                <Text className={`font-medium pl-8 ${fetchedData.data.auto_mode == '1' ? 'text-green-600' : 'text-gray-800'}`}>
+                                    {fetchedData.data.auto_mode == '1' ? "ON" : "OFF"}
+                                </Text>
+                            </View>
+                            <View className="flex-row items-center py-2 pt-4 mt-2 pr-4">
+                                <Text className="text-gray-600 w-40 pl-4">Last Updated:</Text>
+                                <Text className="font-medium text-gray-800 pl-8">{fetchedData.data.updated_at || "--"}</Text>
+                            </View>
+                        </View>
+                    ) : (
+                        <Text className="text-gray-500 italic text-center">Loading current config...</Text>
+                    )}
                 </View>
 
             </ScrollView>
         </SafeAreaView >
-
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#f5f5f5",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 30,
-    },
-    tankContainer: {
-        marginBottom: 40,
-    },
-    controls: {
-        width: "100%",
-        alignItems: "center",
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 10,
-    },
-    slider: {
-        width: "80%",
-        height: 40,
-    },
-    buttonContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: "80%",
-        marginTop: 20,
-    },
-})
-export default dashboard
