@@ -42,13 +42,13 @@ function signIn() {
           alert("successfully login");
           console.log(res.data.token, "res.data.token");
           SecureStore.setItemAsync("token", res.data.token);
-          router.push("/(root)/dashboard");
+          router.push("/dashboard");
         } else {
           alert("Invalid login")
         }
 
       }).catch((error) => {
-        alert("Server offline") ;
+        alert("Server offline");
       });
   };
 
@@ -57,7 +57,7 @@ function signIn() {
       <View className='flex flex-col p-5 pt-10 h-[40%] text-center justify-end items-center '>
         <View>
           <Image source={require('@/assets/images/logo.jpg')}
-          style={{ width: 120, height: 120, resizeMode: 'contain' }}
+            style={{ width: 120, height: 120, resizeMode: 'contain' }}
           />
         </View>
 
@@ -95,6 +95,12 @@ function signIn() {
           <TouchableOpacity onPress={handleLogin} className={`w-full rounded-full p-2 flex flex-row justify-center items-center shadow-md shadow-neutral-400/70 bg-blue-600`}>
 
             <Text className={`text-lg font-bold text-white `}> Login</Text>
+
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.push("/(auth)/wifi-config")} className={`w-full rounded-full mt-2 p-2 flex flex-row justify-center items-center shadow-md shadow-neutral-400/70 bg-blue-600`}>
+
+            <Text className={`text-lg font-bold text-white `}>Setup Your Device</Text>
 
           </TouchableOpacity>
         </View>

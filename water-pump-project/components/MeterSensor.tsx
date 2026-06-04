@@ -1,7 +1,14 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-function MeterSensor({ meterData }) {
+interface MeterData {
+    Bgcolor: string;
+    Textcolor: string;
+    Key: string;
+    Value: number;
+}
+
+function MeterSensor({ meterData }: { meterData: MeterData }) {
     return (
         <View
             className={`flex flex-row items-center justify-between mb-2 rounded-lg shadow-md p-4`}

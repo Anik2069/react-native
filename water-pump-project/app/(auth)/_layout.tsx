@@ -8,6 +8,8 @@ function layout() {
 
         <Stack>
             <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+            <Stack.Screen name='wifi-config' options={{ headerShown: false }} />
+            <Stack.Screen name='wifi-setup' options={{ headerShown: false }} />
         </Stack>
 
     )

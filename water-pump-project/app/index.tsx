@@ -35,7 +35,7 @@ export default function HomeScreen() {
 
   // Redirect based on token availability
   if (hasToken) {
-    return <Redirect href="/(root)/dashboard" />;
+    return <Redirect href="/dashboard" />;
   } else {
     return <Redirect href="/(auth)/sign-in" />;
   }
