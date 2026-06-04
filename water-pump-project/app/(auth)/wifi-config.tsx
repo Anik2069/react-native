@@ -45,12 +45,13 @@ export default function WifiConfig() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-      const response = await axios.get(`http://${gatewayIp}/status`, {
+      const response = await axios.get(`http://${gatewayIp}/`, {
         signal: controller.signal,
+        validateStatus: () => true, // Accept any HTTP status code to confirm reachability
       });
       clearTimeout(timeoutId);
 
-      if (response.status === 200) {
+      if (response.status) {
         setApStatus('connected');
       } else {
         setApStatus('disconnected');
@@ -157,7 +158,6 @@ export default function WifiConfig() {
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           const list = await WifiManager.loadWifiList();
-          console.log(list)
           if (list && list.length > 0) {
             const mapped = list.map((net: any) => ({
               ssid: net.SSID || 'Unknown Network',
@@ -207,8 +207,11 @@ export default function WifiConfig() {
           if (Platform.OS === 'android') {
             await WifiManager.forceWifiUsage(true);
           }
-          const res = await axios.get(`http://${gatewayIp}/status`, { timeout: 2000 });
-          if (res.status === 200) {
+          const res = await axios.get(`http://${gatewayIp}/`, { 
+            timeout: 2000,
+            validateStatus: () => true 
+          });
+          if (res.status) {
             isReachable = true;
             break;
           }
