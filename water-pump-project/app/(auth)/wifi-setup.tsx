@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   TextInput,
   Modal
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import WifiManager from 'react-native-wifi-reborn';
@@ -120,27 +120,26 @@ export default function WifiSetup() {
     }
   };
 
-  // Trigger scan on mount
-  useEffect(() => {
-    const initializeSetup = async () => {
+  // Manage Wi-Fi usage binding on focus
+  useFocusEffect(
+    useCallback(() => {
       if (Platform.OS === 'android') {
-        try {
-          await WifiManager.forceWifiUsage(true);
-          console.log('Wi-Fi usage forced successfully on setup page');
-        } catch (err) {
-          console.error('Failed to force Wi-Fi usage on setup page:', err);
-        }
+        WifiManager.forceWifiUsage(true)
+          .then(() => console.log('Wi-Fi usage forced successfully (wifi-setup focus)'))
+          .catch((err) => console.error('Failed to force Wi-Fi usage on focus:', err));
       }
-      handleScan();
-    };
+    }, [])
+  );
 
-    initializeSetup();
+  // Trigger scan on mount and release Wi-Fi routing on unmount
+  useEffect(() => {
+    handleScan();
 
     return () => {
       if (Platform.OS === 'android') {
         WifiManager.forceWifiUsage(false)
-          .then(() => console.log('Wi-Fi usage released from setup page'))
-          .catch((err) => console.error('Failed to release Wi-Fi usage:', err));
+          .then(() => console.log('Wi-Fi usage released on unmount (wifi-setup)'))
+          .catch((err) => console.error('Failed to release Wi-Fi usage on unmount:', err));
       }
     };
   }, []);
