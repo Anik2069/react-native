@@ -1,8 +1,21 @@
 import React, { useState } from 'react'
-import { Button, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { 
+  Image, 
+  Keyboard, 
+  KeyboardAvoidingView, 
+  Platform, 
+  SafeAreaView, 
+  ScrollView, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  TouchableWithoutFeedback, 
+  View 
+} from 'react-native'
 import axiosInstance from '../../lib/axios';
 import { useRouter } from 'expo-router';
 import * as SecureStore from "expo-secure-store";
+import { Ionicons } from '@expo/vector-icons';
 
 function signIn() {
   const [formData, setFormData] = useState({
@@ -10,11 +23,11 @@ function signIn() {
     password: "",
   });
   const [errorData, setErrorData] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
 
   const handleLogin = async () => {
-    // console.log("object")
     setErrorData("");
     if (formData.email == "" && formData.password == "") {
       setErrorData("Please provide email and password");
@@ -53,62 +66,105 @@ function signIn() {
   };
 
   return (
-    <View className='h-full p-2 bg-white'>
-      <View className='flex flex-col p-5 pt-10 h-[40%] text-center justify-end items-center '>
-        <View>
-          <Image source={require('@/assets/images/logo.jpg')}
-            style={{ width: 120, height: 120, resizeMode: 'contain' }}
-          />
-        </View>
+    <SafeAreaView className="flex-1 bg-slate-50">
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1"
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView 
+            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20, paddingBottom: 40 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Branding Section */}
+            <View className="items-center mb-8">
+              <View className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
+                <Image 
+                  source={require('@/assets/images/logo.jpg')}
+                  style={{ width: 90, height: 90, borderRadius: 20, resizeMode: 'contain' }}
+                />
+              </View>
+              <Text className="text-2xl font-bold text-slate-800 tracking-tight mt-5">Smart Pump Portal</Text>
+              <Text className="text-slate-500 text-xs text-center mt-1.5 max-w-[240px] leading-relaxed">
+                Sign in to monitor and manage your Smart Water Pump system.
+              </Text>
+            </View>
 
-        <View>
-          <Text>Welcome Back to WPP</Text>
+            {/* Form Card */}
+            <View className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+              {errorData ? (
+                <View className="bg-rose-50 border border-rose-100 rounded-xl p-3 mb-4 flex-row items-center gap-2">
+                  <Ionicons name="alert-circle" size={16} color="#f43f5e" />
+                  <Text className="text-rose-600 text-xs font-semibold flex-1">{errorData}</Text>
+                </View>
+              ) : null}
 
-        </View>
+              {/* Email Field */}
+              <View className="mb-4">
+                <Text className="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5 ml-1">Email / Username</Text>
+                <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-xl px-3 relative">
+                  <Ionicons name="mail" size={16} color="#64748b" className="mr-2" />
+                  <TextInput 
+                    className="flex-1 py-3 text-slate-800 text-[14px] font-semibold" 
+                    onChangeText={(value) => setFormData({ ...formData, 'email': value })}
+                    placeholder="Enter email or username"
+                    placeholderTextColor="#94a3b8"
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    autoCorrect={false}
+                  />
+                </View>
+              </View>
 
-      </View>
-      <View className=''>
-        <Text className='text-center text-red-400'>{errorData}</Text>
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : "height"}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View>
-              <Text className=''>Email</Text>
-              <View className={`flex flex-row justify-start items-center relative bg-neutral-100 rounded-full border border-neutral-100 focus:border-primary-500`}>
-                <TextInput className='w-full shadow-gray-50 rounded-full p-4 text-[15px] flex-2 ' onChangeText={(value) => setFormData({ ...formData, 'email': value })} />
+              {/* Password Field */}
+              <View className="mb-6">
+                <Text className="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5 ml-1">Password</Text>
+                <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-xl px-3 relative">
+                  <Ionicons name="lock-closed" size={16} color="#64748b" className="mr-2" />
+                  <TextInput 
+                    className="flex-1 py-3 text-slate-800 text-[14px] font-semibold mr-2" 
+                    secureTextEntry={!showPassword} 
+                    onChangeText={(value) => setFormData({ ...formData, 'password': value })}
+                    placeholder="Enter password"
+                    placeholderTextColor="#94a3b8"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                    <Ionicons
+                      name={showPassword ? "eye-off" : "eye"}
+                      size={16}
+                      color="#64748b"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Actions */}
+              <View className="space-y-3">
+                <TouchableOpacity 
+                  onPress={handleLogin} 
+                  className="w-full bg-blue-600 active:bg-blue-700 py-3.5 rounded-xl flex-row justify-center items-center shadow-md shadow-blue-100"
+                >
+                  <Ionicons name="log-in-sharp" size={18} color="#fff" className="mr-2" />
+                  <Text className="text-white text-[15px] font-bold">Login</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  onPress={() => router.push("/(auth)/wifi-config")} 
+                  className="w-full border border-blue-200 bg-white active:bg-slate-50 py-3.5 rounded-xl flex-row justify-center items-center mt-3"
+                >
+                  <Ionicons name="wifi-sharp" size={18} color="#2563eb" className="mr-2" />
+                  <Text className="text-blue-600 text-[15px] font-bold">Setup Your Device</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
 
-        <KeyboardAvoidingView behavior={Platform.OS == "ios" ? 'padding' : "height"}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View>
-              <Text>Password</Text>
-              <View className={`flex flex-row justify-start items-center relative bg-neutral-100 rounded-full border border-neutral-100 focus:border-primary-500`}>
-                <TextInput className='w-full shadow-gray-50 rounded-full p-4 text-[15px] flex-2 ' secureTextEntry={true} onChangeText={(value) => setFormData({ ...formData, 'password': value })} />
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-
-        <View className='mt-4 rounded-md '>
-          <TouchableOpacity onPress={handleLogin} className={`w-full rounded-full p-2 flex flex-row justify-center items-center shadow-md shadow-neutral-400/70 bg-blue-600`}>
-
-            <Text className={`text-lg font-bold text-white `}> Login</Text>
-
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.push("/(auth)/wifi-config")} className={`w-full rounded-full mt-2 p-2 flex flex-row justify-center items-center shadow-md shadow-neutral-400/70 bg-blue-600`}>
-
-            <Text className={`text-lg font-bold text-white `}>Setup Your Device</Text>
-
-          </TouchableOpacity>
-        </View>
-
-      </View >
-
-    </View >
-  )
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
 export default signIn
