@@ -207,39 +207,56 @@ export default function WifiSetup() {
   };
 
   return (
-    <SafeAreaProvider className="flex-1 bg-slate-900">
-      <SafeAreaView className="flex-1">
+    <SafeAreaProvider className="flex-1 bg-slate-50">
+      <SafeAreaView className="flex-1 bg-slate-50">
         {/* Header */}
-        <View className="flex-row justify-between items-center px-4 py-4 border-b border-slate-800 bg-slate-950">
+        <View className="flex-row justify-between items-center px-4 py-4 border-b border-slate-100 bg-white">
           <TouchableOpacity
             onPress={() => router.back()}
-            className="flex-row items-center bg-slate-800 p-2 rounded-full"
+            className="flex-row items-center bg-slate-100 p-2 rounded-full active:bg-slate-200"
           >
-            <Ionicons name="arrow-back" size={22} color="#60a5fa" />
+            <Ionicons name="arrow-back" size={20} color="#2563eb" />
           </TouchableOpacity>
-          <Text className="text-xl font-bold text-white tracking-wide">Setup Wifi on your Device</Text>
+          <Text className="text-lg font-bold text-slate-800 tracking-wide">Setup Device Wi-Fi</Text>
           <TouchableOpacity
             onPress={handleScan}
             disabled={isScanning}
-            className="bg-slate-800 p-2 rounded-full"
+            className="bg-slate-100 p-2 rounded-full active:bg-slate-200"
           >
-            <Ionicons name="refresh" size={20} color="#60a5fa" />
+            <Ionicons name="refresh" size={20} color="#2563eb" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 40 }}>
+        {/* Step Progress Tracker */}
+        <View className="flex-row justify-center items-center px-4 py-4 bg-white border-b border-slate-100 shadow-sm">
+          <View className="flex-row items-center opacity-50">
+            <View className="w-7 h-7 rounded-full bg-emerald-100 items-center justify-center">
+              <Ionicons name="checkmark" size={14} color="#059669" />
+            </View>
+            <Text className="ml-2 font-bold text-emerald-700 text-xs">Connect to Pump</Text>
+          </View>
+          <View className="w-8 h-[2px] bg-slate-200 mx-3" />
+          <View className="flex-row items-center">
+            <View className="w-7 h-7 rounded-full bg-blue-600 items-center justify-center shadow-sm shadow-blue-200">
+              <Text className="text-white font-bold text-xs">2</Text>
+            </View>
+            <Text className="ml-2 font-bold text-blue-600 text-xs">Setup Device Wi-Fi</Text>
+          </View>
+        </View>
+
+        <ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: 60 }}>
           {/* Wi-Fi Scanner Panel */}
-          <View className="m-4 bg-slate-950/80 rounded-2xl p-4 border border-slate-800 shadow-xl">
+          <View className="m-4 bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
             <View className="flex-row justify-between items-center mb-4">
               <View className="flex-row items-center gap-2">
-                <Ionicons name="wifi" size={20} color="#60a5fa" />
-                <Text className="text-white font-semibold text-lg">Select Network</Text>
+                <Ionicons name="wifi" size={18} color="#2563eb" />
+                <Text className="text-slate-800 font-bold text-[15px]">Select Network</Text>
               </View>
               <TouchableOpacity
                 onPress={() => setShowOpenOnly(!showOpenOnly)}
-                className={`px-3 py-1.5 rounded-full border ${showOpenOnly ? 'bg-emerald-950/80 border-emerald-500/50' : 'bg-slate-900/60 border-slate-800'}`}
+                className={`px-3 py-1.5 rounded-full border ${showOpenOnly ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-200'} active:bg-slate-100`}
               >
-                <Text className={`text-[10px] font-bold ${showOpenOnly ? 'text-emerald-400' : 'text-slate-400'}`}>
+                <Text className={`text-[10px] font-bold ${showOpenOnly ? 'text-emerald-700' : 'text-slate-500'}`}>
                   Public Only
                 </Text>
               </TouchableOpacity>
@@ -247,22 +264,22 @@ export default function WifiSetup() {
 
             {isScanning && (
               <View className="py-8 items-center">
-                <ActivityIndicator size="large" color="#60a5fa" />
-                <Text className="text-slate-400 text-sm mt-3 animate-pulse">Requesting network list...</Text>
+                <ActivityIndicator size="large" color="#2563eb" />
+                <Text className="text-slate-400 text-xs mt-3 font-medium">Requesting network list...</Text>
               </View>
             )}
 
             {!isScanning && scannedNetworks.length === 0 && (
               <View className="py-8 items-center">
-                <Ionicons name="wifi-outline" size={32} color="#475569" />
-                <Text className="text-slate-500 text-xs mt-2 text-center">No networks found. Check connection to pump.</Text>
+                <Ionicons name="wifi-outline" size={28} color="#94a3b8" />
+                <Text className="text-slate-500 text-xs mt-2 text-center font-medium">No networks found. Check connection to pump.</Text>
               </View>
             )}
 
             {!isScanning && scannedNetworks.length > 0 && displayedNetworks.length === 0 && (
               <View className="py-8 items-center">
-                <Ionicons name="eye-off-outline" size={32} color="#475569" />
-                <Text className="text-slate-500 text-xs mt-2 text-center">No open networks found. Try disabling 'Public Only'.</Text>
+                <Ionicons name="eye-off-outline" size={28} color="#94a3b8" />
+                <Text className="text-slate-500 text-xs mt-2 text-center font-medium">No open networks found. Try disabling 'Public Only'.</Text>
               </View>
             )}
 
@@ -272,21 +289,23 @@ export default function WifiSetup() {
                   <TouchableOpacity
                     key={idx}
                     onPress={() => selectNetwork(net)}
-                    className={`flex-row justify-between items-center p-3 rounded-xl border border-slate-800/80 ${ssid === net.ssid ? 'bg-blue-950/40 border-blue-500/50' : 'bg-slate-900/60'}`}
+                    className={`flex-row justify-between items-center p-3 rounded-xl border ${ssid === net.ssid ? 'bg-blue-50/40 border-blue-300' : 'bg-slate-50 border-slate-100'} active:bg-blue-50/20`}
                   >
                     <View className="flex-row items-center gap-3">
-                      <Ionicons name={getWifiIcon(net.rssi, net.secure)} size={18} color={ssid === net.ssid ? '#60a5fa' : '#94a3b8'} />
+                      <View className={`p-2 rounded-lg ${ssid === net.ssid ? 'bg-blue-100/50' : 'bg-slate-100'}`}>
+                        <Ionicons name={getWifiIcon(net.rssi, net.secure)} size={18} color={ssid === net.ssid ? '#2563eb' : '#64748b'} />
+                      </View>
                       <View>
-                        <Text className="text-white text-sm font-medium">{net.ssid}</Text>
-                        <Text className="text-slate-500 text-[10px]">Signal: {net.rssi} dBm</Text>
+                        <Text className="text-slate-800 text-sm font-semibold">{net.ssid}</Text>
+                        <Text className="text-slate-400 text-[10px] mt-0.5 font-medium">Signal: {net.rssi} dBm</Text>
                       </View>
                     </View>
                     <View className="flex-row items-center gap-2">
                       {net.secure && (
-                        <Ionicons name="lock-closed" size={14} color="#475569" />
+                        <Ionicons name="lock-closed" size={12} color="#64748b" />
                       )}
-                      <View className={`px-2.5 py-1 rounded-full ${ssid === net.ssid ? 'bg-blue-500' : 'bg-slate-800'}`}>
-                        <Text className="text-white text-[10px] font-bold">
+                      <View className={`px-2.5 py-1 rounded-full ${ssid === net.ssid ? 'bg-blue-600' : 'bg-slate-200'}`}>
+                        <Text className={`text-[10px] font-bold ${ssid === net.ssid ? 'text-white' : 'text-slate-600'}`}>
                           {ssid === net.ssid ? 'Selected' : 'Select'}
                         </Text>
                       </View>
@@ -304,26 +323,26 @@ export default function WifiSetup() {
             animationType="fade"
             onRequestClose={() => setPasswordModalVisible(false)}
           >
-            <View className="flex-1 justify-center items-center bg-slate-950/80 px-6">
-              <View className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-[340px] shadow-2xl">
+            <View className="flex-1 justify-center items-center bg-slate-900/60 px-6">
+              <View className="bg-white border border-slate-100 rounded-3xl p-6 w-full max-w-[340px] shadow-2xl">
                 {/* Lock Icon and Header */}
                 <View className="items-center mb-5">
-                  <View className="bg-blue-500/10 p-3 rounded-full mb-2">
-                    <Ionicons name="lock-closed" size={22} color="#60a5fa" />
+                  <View className="bg-blue-50 p-3 rounded-full mb-2">
+                    <Ionicons name="lock-closed" size={22} color="#2563eb" />
                   </View>
-                  <Text className="text-white font-bold text-lg text-center">Secure Network</Text>
-                  <Text className="text-slate-400 text-xs text-center mt-1">
-                    Enter the password for <Text className="font-semibold text-blue-400">{selectedNetwork?.ssid}</Text>
+                  <Text className="text-slate-800 font-bold text-lg text-center">Secure Network</Text>
+                  <Text className="text-slate-500 text-xs text-center mt-1">
+                    Enter the password for <Text className="font-semibold text-blue-600">{selectedNetwork?.ssid}</Text>
                   </Text>
                 </View>
 
                 {/* Password Input field */}
-                <View className="flex-row items-center bg-slate-950 border border-slate-800 rounded-xl px-3 mb-6 relative">
-                  <Ionicons name="key" size={16} color="#475569" className="mr-2" />
+                <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-xl px-3 mb-6 relative">
+                  <Ionicons name="key" size={16} color="#64748b" className="mr-2" />
                   <TextInput
-                    className="flex-1 py-3 text-white text-[15px] mr-2"
+                    className="flex-1 py-3 text-slate-800 text-[15px] mr-2 font-medium"
                     placeholder="Wi-Fi Password"
-                    placeholderTextColor="#475569"
+                    placeholderTextColor="#94a3b8"
                     secureTextEntry={!showPassword}
                     value={inputPassword}
                     onChangeText={setInputPassword}
@@ -335,7 +354,7 @@ export default function WifiSetup() {
                     <Ionicons
                       name={showPassword ? "eye-off" : "eye"}
                       size={16}
-                      color="#475569"
+                      color="#64748b"
                     />
                   </TouchableOpacity>
                 </View>
@@ -344,9 +363,9 @@ export default function WifiSetup() {
                 <View className="flex-row gap-3">
                   <TouchableOpacity
                     onPress={() => setPasswordModalVisible(false)}
-                    className="flex-1 border border-slate-700 py-3.5 rounded-full items-center bg-slate-800/40"
+                    className="flex-1 border border-slate-200 py-3.5 rounded-full items-center bg-slate-50 active:bg-slate-100"
                   >
-                    <Text className="text-slate-300 font-semibold text-sm">Cancel</Text>
+                    <Text className="text-slate-600 font-semibold text-sm">Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
@@ -354,9 +373,9 @@ export default function WifiSetup() {
                       submitWifiCredentials(ssid, inputPassword);
                     }}
                     disabled={!inputPassword}
-                    className={`flex-1 py-3.5 rounded-full items-center ${inputPassword ? 'bg-blue-600' : 'bg-slate-800'}`}
+                    className={`flex-1 py-3.5 rounded-full items-center active:bg-blue-700 ${inputPassword ? 'bg-blue-600' : 'bg-slate-200'}`}
                   >
-                    <Text className={`font-bold text-sm ${inputPassword ? 'text-white' : 'text-slate-500'}`}>
+                    <Text className={`font-bold text-sm ${inputPassword ? 'text-white' : 'text-slate-400'}`}>
                       Connect
                     </Text>
                   </TouchableOpacity>
@@ -368,10 +387,10 @@ export default function WifiSetup() {
 
         {/* Connection Progress Overlay */}
         {isConnecting && (
-          <View className="absolute inset-0 bg-slate-950/95 justify-center items-center p-6 z-50">
-            <View className="bg-slate-900 rounded-3xl p-6 border border-slate-800 w-full max-w-[320px] items-center">
-              <ActivityIndicator size="large" color="#60a5fa" className="mb-4" />
-              <Text className="text-white font-bold text-lg mb-2">Connecting Pump...</Text>
+          <View className="absolute inset-0 bg-slate-900/60 justify-center items-center p-6 z-50">
+            <View className="bg-white rounded-3xl p-6 border border-slate-100 w-full max-w-[320px] items-center shadow-2xl">
+              <ActivityIndicator size="large" color="#2563eb" className="mb-4" />
+              <Text className="text-slate-800 font-bold text-lg mb-2">Connecting Pump...</Text>
 
               <View className="w-full space-y-3 mt-4">
                 {connectionStepsText.map((step, idx) => (
@@ -379,11 +398,11 @@ export default function WifiSetup() {
                     {connectionStep > idx ? (
                       <Ionicons name="checkmark-circle" size={18} color="#10b981" />
                     ) : connectionStep === idx ? (
-                      <ActivityIndicator size="small" color="#60a5fa" />
+                      <ActivityIndicator size="small" color="#2563eb" />
                     ) : (
-                      <Ionicons name="ellipse-outline" size={18} color="#475569" />
+                      <Ionicons name="ellipse-outline" size={18} color="#94a3b8" />
                     )}
-                    <Text className={`text-xs ${connectionStep === idx ? 'text-blue-400 font-semibold' : connectionStep > idx ? 'text-slate-400' : 'text-slate-600'}`}>
+                    <Text className={`text-xs font-semibold ${connectionStep === idx ? 'text-blue-600' : connectionStep > idx ? 'text-slate-500' : 'text-slate-300'}`}>
                       {step}
                     </Text>
                   </View>
@@ -395,13 +414,13 @@ export default function WifiSetup() {
 
         {/* Success feedback screen */}
         {connectionResult === 'success' && (
-          <View className="absolute inset-0 bg-slate-950/95 justify-center items-center p-6 z-50">
-            <View className="bg-slate-900 rounded-3xl p-6 border border-slate-800 w-full max-w-[320px] items-center">
-              <View className="bg-emerald-500/10 p-4 rounded-full mb-4 border border-emerald-500/20">
+          <View className="absolute inset-0 bg-slate-900/60 justify-center items-center p-6 z-50">
+            <View className="bg-white rounded-3xl p-6 border border-slate-100 w-full max-w-[320px] items-center shadow-2xl">
+              <View className="bg-emerald-50 p-4 rounded-full mb-4 border border-emerald-100">
                 <Ionicons name="checkmark-done-circle" size={54} color="#10b981" />
               </View>
-              <Text className="text-white font-bold text-xl mb-2 text-center">Setup Completed!</Text>
-              <Text className="text-slate-400 text-xs text-center mb-6 px-2 leading-relaxed">
+              <Text className="text-slate-800 font-bold text-xl mb-2 text-center">Setup Completed!</Text>
+              <Text className="text-slate-500 text-xs text-center mb-6 px-2 leading-relaxed font-medium">
                 The Smart Pump controller has successfully registered the configuration parameters and is connecting to **{ssid}**.
               </Text>
 
@@ -410,7 +429,7 @@ export default function WifiSetup() {
                   setConnectionResult('idle');
                   router.push('/(auth)/sign-in');
                 }}
-                className="w-full bg-emerald-600 py-3.5 rounded-full items-center shadow"
+                className="w-full bg-emerald-600 py-3.5 rounded-full items-center shadow-sm shadow-emerald-200 active:bg-emerald-700"
               >
                 <Text className="text-white font-bold text-sm">Return to Login</Text>
               </TouchableOpacity>
@@ -420,21 +439,21 @@ export default function WifiSetup() {
 
         {/* Failure feedback screen */}
         {connectionResult === 'failed' && (
-          <View className="absolute inset-0 bg-slate-950/95 justify-center items-center p-6 z-50">
-            <View className="bg-slate-900 rounded-3xl p-6 border border-slate-800 w-full max-w-[320px] items-center">
-              <View className="bg-rose-500/10 p-4 rounded-full mb-4 border border-rose-500/20">
+          <View className="absolute inset-0 bg-slate-900/60 justify-center items-center p-6 z-50">
+            <View className="bg-white rounded-3xl p-6 border border-slate-100 w-full max-w-[320px] items-center shadow-2xl">
+              <View className="bg-rose-50 p-4 rounded-full mb-4 border border-rose-100">
                 <Ionicons name="alert-circle" size={54} color="#f43f5e" />
               </View>
-              <Text className="text-white font-bold text-xl mb-2 text-center">Setup Failed</Text>
-              <Text className="text-slate-400 text-xs text-center mb-6 leading-relaxed">
+              <Text className="text-slate-800 font-bold text-xl mb-2 text-center">Setup Failed</Text>
+              <Text className="text-slate-500 text-xs text-center mb-6 leading-relaxed font-medium px-2">
                 {errorMessage || 'The controller failed to apply the network setup config.'}
               </Text>
 
               <TouchableOpacity
                 onPress={() => setConnectionResult('idle')}
-                className="w-full bg-slate-800 py-3.5 rounded-full items-center mb-2.5"
+                className="w-full bg-slate-100 border border-slate-200 py-3.5 rounded-full items-center mb-2.5 active:bg-slate-200"
               >
-                <Text className="text-white font-bold text-sm">Try Again</Text>
+                <Text className="text-slate-700 font-bold text-sm">Try Again</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -442,9 +461,9 @@ export default function WifiSetup() {
                   setConnectionResult('idle');
                   router.push('/(auth)/sign-in');
                 }}
-                className="w-full py-3.5 items-center"
+                className="w-full py-3.5 items-center active:bg-slate-50 rounded-full"
               >
-                <Text className="text-blue-500 font-bold text-sm">Back to Login</Text>
+                <Text className="text-blue-600 font-bold text-sm">Back to Login</Text>
               </TouchableOpacity>
             </View>
           </View>
