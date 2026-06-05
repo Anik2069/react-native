@@ -1,4 +1,4 @@
-package com.anonymous.waterpumpproject
+package com.waterpumpmonitor
 
 import android.app.Application
 import android.content.res.Configuration
