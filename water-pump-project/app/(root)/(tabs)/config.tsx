@@ -58,7 +58,7 @@ export default function Config() {
                     {/* Left - Logo */}
                     <View className="flex items-center">
                         <Image
-                            source={require('@/assets/images/logo.jpg')}
+                            source={require('@/assets/images/logo.png')}
                             className="w-[80px] h-[80px] rounded-lg"
                         />
                     </View>

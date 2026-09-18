@@ -80,7 +80,7 @@ function signIn() {
             <View className="items-center mb-8">
               <View className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
                 <Image 
-                  source={require('@/assets/images/logo.jpg')}
+                  source={require('@/assets/images/logo.png')}
                   style={{ width: 90, height: 90, borderRadius: 20, resizeMode: 'contain' }}
                 />
               </View>
