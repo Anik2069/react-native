@@ -6,18 +6,35 @@ import { useRouter } from 'expo-router';
 import axiosInstance from '@/lib/axios';
 import Badge from '@/components/Badge';
 import WaterTank from '@/components/WaterTank';
+import { findDeviceId, findUserName } from '@/lib/deviceHelper';
 
 function dashboard() {
     const router = useRouter();
     const [responseData, setResponseData] = useState<any>({});
-    const intervalRef = useRef<number | null>(null);
+    const [userName, setUserName] = useState<string>('');
+    const [deviceId, setDeviceId] = useState<string>('');
+    const intervalRef = useRef<any>(null);
 
-    const handleLogout = () => {
-        SecureStore.setItemAsync("token", "");
+    const handleLogout = async () => {
+        await SecureStore.setItemAsync("token", "");
+        await SecureStore.setItemAsync("userName", "");
+        await SecureStore.setItemAsync("deviceId", "");
         router.push("/(auth)/sign-in");
     }
 
     useEffect(() => {
+        // Load username and device ID from SecureStore
+        const loadUserData = async () => {
+            const storedName = await SecureStore.getItemAsync("userName");
+            if (storedName) setUserName(storedName);
+            const storedDeviceId = await SecureStore.getItemAsync("deviceId");
+            if (storedDeviceId) setDeviceId(storedDeviceId);
+        };
+        loadUserData();
+
+        // Fetch immediately on mount
+        fetchData();
+
         intervalRef.current = setInterval(() => {
             fetchData();
         }, 2000);
@@ -53,18 +70,30 @@ function dashboard() {
                         "Content-Type": "multipart/form-data",
                     }
                 }).then((response) => {
-                    if (response.data.status != "error") {
+                    if (response.data && response.data.status != "error") {
+                        const rawData = response.data.data || response.data;
+                        setResponseData(rawData);
+                        console.log("Fetch API response keys:", Object.keys(response.data));
 
-                        // setWaterLevel(response.data.data.MeterInfo[0].Value)
-                        setResponseData(response.data.data);
+                        // Find device ID from anywhere in response
+                        const foundDeviceId = findDeviceId(response.data);
+                        if (foundDeviceId) {
+                            setDeviceId(foundDeviceId);
+                            SecureStore.setItemAsync("deviceId", foundDeviceId);
+                        }
+
+                        // Find user name from response if available
+                        const foundUser = findUserName(response.data);
+                        if (foundUser) {
+                            setUserName(foundUser);
+                            SecureStore.setItemAsync("userName", foundUser);
+                        }
                     } else {
                         if (intervalRef.current !== null) {
                             clearInterval(intervalRef.current);
                         }
                         router.push("/(auth)/sign-in")
                     }
-
-
                 })
 
                 // axiosInstance.post("/fetch_api.php", tempFormData, {
@@ -120,6 +149,7 @@ function dashboard() {
         <SafeAreaView className='h-full '>
             <ScrollView
                 className="h-full pt-10"
+                contentContainerStyle={{ paddingBottom: 150 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }
@@ -149,8 +179,28 @@ function dashboard() {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View>
-                    {/* <Text>You are logged in</Text> */}
+
+                {/* User Info Card */}
+                <View className="bg-white rounded-lg shadow-lg p-4 m-2 flex-row items-center">
+                    <View className="bg-blue-100 rounded-full w-10 h-10 items-center justify-center mr-3">
+                        <Text className="text-blue-600 font-bold text-lg">
+                            {userName ? userName.charAt(0).toUpperCase() : 'U'}
+                        </Text>
+                    </View>
+                    <View className="flex-1">
+                        <View className="flex-row items-center mb-1">
+                            <Text className="text-xs text-gray-400 font-medium">User: </Text>
+                            <Text className="text-sm font-semibold text-gray-800">
+                                {userName || findUserName(responseData) || 'Loading...'}
+                            </Text>
+                        </View>
+                        <View className="flex-row items-center">
+                            <Text className="text-xs text-gray-400 font-medium">Device ID: </Text>
+                            <Text className="text-sm font-semibold text-teal-600">
+                                {deviceId || findDeviceId(responseData) || 'N/A'}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
 
                 <View className="bg-white rounded-lg shadow-lg p-2 m-2">
