@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { 
-  Image, 
-  Keyboard, 
-  KeyboardAvoidingView, 
-  Platform, 
-  SafeAreaView, 
-  ScrollView, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  View 
+import {
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native'
 import axiosInstance from '../../lib/axios';
 import { useRouter } from 'expo-router';
@@ -94,18 +94,18 @@ function signIn() {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}
         className="flex-1"
       >
-        <ScrollView 
-          contentContainerStyle={{ 
-            flexGrow: 1, 
-            justifyContent: isKeyboardVisible ? 'flex-start' : 'center', 
-            paddingHorizontal: 20, 
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: isKeyboardVisible ? 'flex-start' : 'center',
+            paddingHorizontal: 20,
             paddingTop: isKeyboardVisible ? 24 : 10,
-            paddingBottom: isKeyboardVisible ? 160 : 40 
+            paddingBottom: isKeyboardVisible ? 160 : 40
           }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
@@ -114,22 +114,22 @@ function signIn() {
           {/* Branding Section */}
           <View className={`items-center ${isKeyboardVisible ? 'mb-4' : 'mb-8'}`}>
             <View className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
-              <Image 
+              <Image
                 source={require('@/assets/images/logo.png')}
-                style={{ 
-                  width: isKeyboardVisible ? 55 : 85, 
-                  height: isKeyboardVisible ? 55 : 85, 
-                  borderRadius: 16, 
-                  resizeMode: 'contain' 
+                style={{
+                  width: isKeyboardVisible ? 55 : 85,
+                  height: isKeyboardVisible ? 55 : 85,
+                  borderRadius: 16,
+                  resizeMode: 'contain'
                 }}
               />
             </View>
             <Text className={`font-bold text-slate-800 tracking-tight ${isKeyboardVisible ? 'text-xl mt-2' : 'text-2xl mt-4'}`}>
-              Water Pump Controller
+              Smart Pump Controller
             </Text>
             {!isKeyboardVisible && (
               <Text className="text-slate-500 text-xs text-center mt-1.5 max-w-[240px] leading-relaxed">
-                Sign in to monitor and control your Smart Water Pump system.
+                Sign in to monitor and control your Smart Pump Controller.
               </Text>
             )}
           </View>
@@ -148,8 +148,8 @@ function signIn() {
               <Text className="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5 ml-1">Email / Username</Text>
               <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-xl px-3 relative">
                 <Ionicons name="mail" size={16} color="#64748b" className="mr-2" />
-                <TextInput 
-                  className="flex-1 py-3 text-slate-800 text-[14px] font-semibold" 
+                <TextInput
+                  className="flex-1 py-3 text-slate-800 text-[14px] font-semibold"
                   value={formData.email}
                   onChangeText={(value) => setFormData({ ...formData, 'email': value })}
                   placeholder="Enter email or username"
@@ -169,11 +169,11 @@ function signIn() {
               <Text className="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1.5 ml-1">Password</Text>
               <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-xl px-3 relative">
                 <Ionicons name="lock-closed" size={16} color="#64748b" className="mr-2" />
-                <TextInput 
+                <TextInput
                   ref={passwordInputRef}
-                  className="flex-1 py-3 text-slate-800 text-[14px] font-semibold mr-2" 
+                  className="flex-1 py-3 text-slate-800 text-[14px] font-semibold mr-2"
                   value={formData.password}
-                  secureTextEntry={!showPassword} 
+                  secureTextEntry={!showPassword}
                   onChangeText={(value) => setFormData({ ...formData, 'password': value })}
                   placeholder="Enter password"
                   placeholderTextColor="#94a3b8"
@@ -194,20 +194,20 @@ function signIn() {
 
             {/* Actions */}
             <View className="space-y-3">
-              <TouchableOpacity 
-                onPress={handleLogin} 
-                className="w-full bg-blue-600 active:bg-blue-700 py-3.5 rounded-xl flex-row justify-center items-center shadow-md shadow-blue-100"
+              <TouchableOpacity
+                onPress={handleLogin}
+                className="w-full bg-sky-600 active:bg-sky-700 py-3.5 rounded-xl flex-row justify-center items-center shadow-md shadow-sky-200"
               >
                 <Ionicons name="log-in-sharp" size={18} color="#fff" className="mr-2" />
                 <Text className="text-white text-[15px] font-bold">Login</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                onPress={() => router.push("/(auth)/wifi-config")} 
-                className="w-full border border-blue-200 bg-white active:bg-slate-50 py-3.5 rounded-xl flex-row justify-center items-center mt-3"
+              <TouchableOpacity
+                onPress={() => router.push("/(auth)/wifi-config")}
+                className="w-full border border-sky-200 bg-white active:bg-slate-50 py-3.5 rounded-xl flex-row justify-center items-center mt-3"
               >
-                <Ionicons name="wifi-sharp" size={18} color="#2563eb" className="mr-2" />
-                <Text className="text-blue-600 text-[15px] font-bold">Setup Your Device</Text>
+                <Ionicons name="wifi-sharp" size={18} color="#0284c7" className="mr-2" />
+                <Text className="text-sky-700 text-[15px] font-bold">Setup Your Device</Text>
               </TouchableOpacity>
             </View>
           </View>

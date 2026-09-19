@@ -1,26 +1,39 @@
 
 
 import { Tabs } from 'expo-router';
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { Platform } from "react-native";
+
 export default function Layout() {
     return (
         <Tabs
             initialRouteName="dashboard"
             screenOptions={{
-                tabBarActiveTintColor: "white",
-                tabBarInactiveTintColor: "#aaa",
+                tabBarActiveTintColor: "#38bdf8",
+                tabBarInactiveTintColor: "#94a3b8",
                 headerShown: false,
+                tabBarLabelStyle: {
+                    fontSize: 11,
+                    fontWeight: "700",
+                    marginTop: -4,
+                },
                 tabBarStyle: {
                     position: "absolute",
                     left: 20,
                     right: 20,
-                    bottom: 45,
-                    backgroundColor: "#333333",
-                    borderRadius: 30,
-                    height: 60,
+                    bottom: Platform.OS === 'ios' ? 30 : 22,
+                    backgroundColor: "#0f172a",
+                    borderRadius: 28,
+                    height: 64,
                     paddingBottom: 8,
                     paddingTop: 8,
-                    elevation: 5, // shadow for Android
+                    borderWidth: 1.5,
+                    borderColor: "#334155",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 10 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 16,
+                    elevation: 10,
                 },
             }}
         >
@@ -29,9 +42,9 @@ export default function Layout() {
                 options={{
                     title: "Dashboard",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <MaterialIcons
-                            name={focused ? "home" : "home-filled"} // active vs inactive
-                            size={size || 24}
+                        <Ionicons
+                            name={focused ? "speedometer" : "speedometer-outline"}
+                            size={size || 22}
                             color={color}
                         />
                     ),
@@ -42,9 +55,9 @@ export default function Layout() {
                 options={{
                     title: "History",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <MaterialIcons
-                            name={focused ? "history" : "schedule"} // active vs inactive
-                            size={size || 24}
+                        <Ionicons
+                            name={focused ? "time" : "time-outline"}
+                            size={size || 22}
                             color={color}
                         />
                     ),
@@ -55,9 +68,9 @@ export default function Layout() {
                 options={{
                     title: "Config",
                     tabBarIcon: ({ focused, color, size }) => (
-                        <MaterialIcons
-                            name={ "settings"} // active vs inactive
-                            size={size || 24}
+                        <Ionicons
+                            name={focused ? "options" : "options-outline"}
+                            size={size || 22}
                             color={color}
                         />
                     ),
